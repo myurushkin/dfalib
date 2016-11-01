@@ -2,6 +2,7 @@
 #define DFA_H
 
 #include <vector>
+#include <set>
 
 struct Automata {
     int n_value; // state count
@@ -31,6 +32,7 @@ struct Automata {
     }
 };
 
+void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata);
 void find_min_automata(const Automata& automata, Automata& new_automata);
 bool check_eq(const Automata& automata_first_, const Automata& automata_second_);
 

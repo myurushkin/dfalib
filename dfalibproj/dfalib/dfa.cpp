@@ -1,18 +1,13 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <cassert>
-#include <list>
-#include <memory>
-#include <stdio.h>
-#include <string.h>
-#include <string>
-#include <queue>
-#include <set>
-#include <tuple>
-
 #include "dfa.h"
+
+#include <cassert>
+#include <queue>
+
+void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
+    new_automata.l_value = first_automata.l_value;
+    new_automata.n_value = first_automata.n_value * second_automata.n_value;
+    
+}
 
 void build_minimum_equivalent_automata(const Automata& automata, Automata& new_automata) {
     const int states_count = automata.n_value;
