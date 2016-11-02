@@ -15,6 +15,10 @@ struct Automata {
         return terminal_states.size();
     }
 
+	int state_count() const {
+		return n_value / l_value;
+	}
+
     void init() {
         transitions.resize(l_value * n_value);
     }
@@ -32,7 +36,7 @@ struct Automata {
     }
 };
 
-void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata);
+void intesect_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata);
 void find_min_automata(const Automata& automata, Automata& new_automata);
 bool check_eq(const Automata& automata_first_, const Automata& automata_second_);
 

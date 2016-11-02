@@ -3,10 +3,27 @@
 #include <cassert>
 #include <queue>
 
-void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
-    new_automata.l_value = first_automata.l_value;
-    new_automata.n_value = first_automata.n_value * second_automata.n_value;
-    
+void intesect_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
+	new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
+	new_automata.n_value = new_automata.l_value * first_automata.state_count() * second_automata.state_count();
+
+	for (auto first_state : first_automata.terminal_states) {
+		for (auto second_state : second_automata.terminal_states) {
+			new_automata.terminal_states.insert(first_state * second_automata.terminal_states.size() + second_state);
+		}
+	}
+
+	for (int i = 0; i < first_automata.state_count(); ++i) {
+		for (int j = 0; j < second_automata.state_count(); ++j) {
+			for (int k = 0; k < new_automata.l_value; ++k) {
+				int s_first = first_automata.get_to_state(i, k);
+				int s_second = second_automata.get_to_state(j, k);
+
+				new_automata.set_transition(i * second_automata.state_count() + j, k,
+					s_first * second_automata.state_count() + s_second);
+			}
+		}
+	}
 }
 
 void build_minimum_equivalent_automata(const Automata& automata, Automata& new_automata) {
