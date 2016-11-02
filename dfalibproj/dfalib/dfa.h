@@ -36,6 +36,7 @@ struct Automata {
     }
 };
 
+void create_automata(std::string rexpr, Automata& new_automata);
 void intesect_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata);
 void find_min_automata(const Automata& automata, Automata& new_automata);
 bool check_eq(const Automata& automata_first_, const Automata& automata_second_);

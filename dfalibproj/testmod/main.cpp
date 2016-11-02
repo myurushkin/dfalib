@@ -76,31 +76,40 @@
 int main() {
     // test();
 
-    std::ifstream in("B.in");
+    Automata result;
+    // create_automata("ab", result);
 
-    int k_value;
-    Automata automata;
-    in >> automata.n_value >> k_value >> automata.l_value;
+    create_automata("a", result);
+    create_automata("a+b", result);
+    create_automata("ab", result);
+    create_automata("a(bc)", result);
+    create_automata("a(b+|(c))", result);
+    //create_automata("(d(a+b)c*d*ed)", result);
+    //std::ifstream in("B.in");
 
-    automata.init();
-    for (int j = 0; j < k_value; ++j) {
-        int term_index;
-        in >> term_index;
-        automata.terminal_states.insert(term_index);
-    }
+    //int k_value;
+    //Automata automata;
+    //in >> automata.n_value >> k_value >> automata.l_value;
 
-    int from, to;
-    char symb;
-    for (int j = 0; j < automata.n_value * automata.l_value; ++j) {
-        in >> from >> symb >> to;
-        automata.set_transition(from, symb - 'a', to);
-    }
+    //automata.init();
+    //for (int j = 0; j < k_value; ++j) {
+    //    int term_index;
+    //    in >> term_index;
+    //    automata.terminal_states.insert(term_index);
+    //}
+
+    //int from, to;
+    //char symb;
+    //for (int j = 0; j < automata.n_value * automata.l_value; ++j) {
+    //    in >> from >> symb >> to;
+    //    automata.set_transition(from, symb - 'a', to);
+    //}
 
 
-    std::ofstream out("B.out");
-    Automata new_automata;
-    find_min_automata(automata, new_automata);
-    out << new_automata.n_value;
+    //std::ofstream out("B.out");
+    //Automata new_automata;
+    //find_min_automata(automata, new_automata);
+    //out << new_automata.n_value;
 
     return 0;
 }
