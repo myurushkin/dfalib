@@ -1,7 +1,7 @@
 # dfalib
 
 In dfalib the following algorithms are implemented:
-  - create DFA by regexpression
-  - minimize DFA
+  - create DFA from regular expression.
+  - DFA minimization.
   - intersection of two DFAs.
   
