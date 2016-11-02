@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "../dfalib/dfa.h"
-
+#include "regex++/regex.h"
 
 //
 //void test() {
@@ -73,17 +73,27 @@
 //}
 
 /* Main program */
+
 int main() {
     // test();
 
     Automata result;
     // create_automata("ab", result);
 
-    create_automata("a", result);
-    create_automata("a+b", result);
-    create_automata("ab", result);
-    create_automata("a(bc)", result);
-    create_automata("a(b+|(c))", result);
+    RegEx re;
+
+    std::ofstream f("./temp.txt");
+    re.Compile("(((a)))");
+    re.Dump2Stream(f);
+    return 0;
+    
+    
+
+    //create_automata("a", result);
+    //create_automata("a+b", result);
+    //create_automata("ab", result);
+    //create_automata("a(bc)", result);
+    //create_automata("a(b+|(c))", result);
     //create_automata("(d(a+b)c*d*ed)", result);
     //std::ifstream in("B.in");
 

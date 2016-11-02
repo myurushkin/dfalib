@@ -44,7 +44,7 @@ struct GraphToken {
 };
 
 GraphToken mult_graphtokens(const GraphToken& first, const GraphToken& second) {
-    GraphToken re
+
     return GraphToken();
 }
 

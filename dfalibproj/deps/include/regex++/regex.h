@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
-
+#include <ostream>
 #include "regexstate.h"
 
 
@@ -40,6 +40,7 @@ public:
 
 	bool Compile(std::string strRegEx);
 	bool Match(std::string strText);
+    void Dump2Stream(std::ostream& out);
 	typedef std::vector<RegExState*> Table;
 	typedef Table::reverse_iterator TableReverseIterator;
 	typedef Table::iterator TableIterator; 
