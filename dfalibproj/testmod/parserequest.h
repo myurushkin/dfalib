@@ -3,6 +3,7 @@
 
 #include <list>
 #include <stack>
+#include <memory>
 #include <vector>
 
 struct Token {
@@ -36,15 +37,15 @@ struct Token {
 struct GrammarExprTree {
 	char op;
 	std::string name;
-	std::vector<GrammarExprTree*> childs;
+	std::vector<std::shared_ptr<GrammarExprTree>> childs;
 
-	static GrammarExprTree* createItemNode(std::string name) {
-		GrammarExprTree* result = new GrammarExprTree();
+	static std::shared_ptr<GrammarExprTree> createItemNode(std::string name) {
+		std::shared_ptr<GrammarExprTree> result(new GrammarExprTree());
 		result->name = name;
 		return result;
 	}
-	static GrammarExprTree* createOpNode(char op, GrammarExprTree* left, GrammarExprTree* right) {
-		GrammarExprTree* result = new GrammarExprTree();
+	static std::shared_ptr<GrammarExprTree> createOpNode(char op, std::shared_ptr<GrammarExprTree> left, std::shared_ptr<GrammarExprTree> right) {
+		std::shared_ptr<GrammarExprTree> result(new GrammarExprTree());
 		result->op = op;
 		result->childs.resize(2);
 		result->childs[0] = left;
@@ -53,6 +54,6 @@ struct GrammarExprTree {
 	}
 };
 
-void parse_request(std::string rexpr, GrammarExprTree*& result);
+std::shared_ptr<GrammarExprTree> parse_request(std::string rexpr);
 
 #endif

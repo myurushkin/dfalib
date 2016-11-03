@@ -1,7 +1,8 @@
 #include <iostream>
 #include <set>
 #include <fstream>
-
+#include <queue>
+#include <map>
 //#include "../dfalib/dfa.h"
 //#include "regex++/regex.h"
 #include <cassert>
@@ -10,7 +11,9 @@
 #include <algorithm>
 #include <vector>
 #include <cctype>
+#include <memory>
 
+#include "../dfalib/dfa.h"
 #include "parserequest.h"
 //
 //void test() {
@@ -83,7 +86,25 @@
 
 
 
-
+std::shared_ptr<Automata> generate_big_automata(std::shared_ptr<GrammarExprTree> root, std::map<std::string, std::shared_ptr<Automata>>& processed_items) {
+	if (root->childs.empty()) {
+		return processed_items.at(root->name);
+	}
+	
+	std::shared_ptr<Automata> result = find_min_automata(generate_big_automata(root->childs[0], processed_items));
+	for (int i = 1; i < processed_items.size(); ++i) {
+		auto next = find_min_automata(generate_big_automata(root->childs[i], processed_items));
+		if (root->op == '*') {
+			result = find_min_automata(intesect_automata(result, next));
+			continue;
+		}
+		if (root->op == '|') {
+			result = find_min_automata(sum_automata(result, next));
+			continue;
+		}
+	}
+	return result;
+}
 
 int main() {
 	std::string input = "result =   (I | I4) ( I5 | I)";
@@ -91,8 +112,29 @@ int main() {
 
 	
 	int pos = input.find("=") + 1;
-	GrammarExprTree* new_automata = 0;
-	parse_request(input.substr(pos), new_automata);
+	std::shared_ptr<GrammarExprTree> calculations_graph = parse_request(input.substr(pos));
+
+	std::set<std::string> items;
+	std::queue<std::shared_ptr<GrammarExprTree>> nodes;
+	nodes.push(calculations_graph);
+	while (nodes.empty() == false) {
+		auto next = nodes.front();
+		nodes.pop();
+		for (int i = 0; i < next->childs.size(); ++i) {
+			nodes.push(next->childs[i]);
+		}
+		if (next->childs.empty()) {
+			items.insert(next->name);
+		}
+	}
+
+	std::map<std::string, std::shared_ptr<Automata>> processed_items;
+	// read processed items
+	
+	std::shared_ptr<Automata> result = generate_big_automata(calculations_graph, processed_items);
+	
+
+
 
     // test();
 

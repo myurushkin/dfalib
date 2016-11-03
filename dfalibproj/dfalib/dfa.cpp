@@ -432,3 +432,24 @@ bool check_eq(const Automata& automata_first_, const Automata& automata_second_)
 
     return true;
 }
+
+
+
+std::shared_ptr<Automata> sum_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
+{
+	/*Automata* result = new Automata();
+	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
+	return std::make_shared<Automata>(result);*/
+}
+std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
+{
+	Automata* result = new Automata();
+	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
+	return std::make_shared<Automata>(result);
+}
+std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& automata)
+{
+	Automata* result = new Automata();
+	find_min_automata(*automata.get(), *result);
+	return std::make_shared<Automata>(result);
+}

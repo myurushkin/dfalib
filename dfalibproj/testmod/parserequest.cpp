@@ -1,10 +1,11 @@
 #include <algorithm>
 #include <cctype>
 #include <cassert>
+#include <memory>
 #include "parserequest.h"
 
 void private_create_automata(std::list<Token>& input, std::list<Token>::iterator& it,
-	std::stack<GrammarExprTree*>& tokens, std::stack<char>& control) {
+	std::stack<std::shared_ptr<GrammarExprTree>>& tokens, std::stack<char>& control) {
 
 	while (it != input.end()) {
 		Token symb = *it++;
@@ -26,9 +27,9 @@ void private_create_automata(std::list<Token>& input, std::list<Token>::iterator
 					throw std::runtime_error("smth is wrong");
 				}
 
-				GrammarExprTree* second_token = tokens.top();
+				std::shared_ptr<GrammarExprTree> second_token = tokens.top();
 				tokens.pop();
-				GrammarExprTree* first_token = tokens.top();
+				std::shared_ptr<GrammarExprTree> first_token = tokens.top();
 				tokens.pop();
 				tokens.push(GrammarExprTree::createOpNode('|', first_token, second_token));
 			}
@@ -53,9 +54,9 @@ void private_create_automata(std::list<Token>& input, std::list<Token>::iterator
 				tokens.push(GrammarExprTree::createItemNode(symb.item));
 			}
 
-			GrammarExprTree* second_token = tokens.top();
+			std::shared_ptr<GrammarExprTree> second_token = tokens.top();
 			tokens.pop();
-			GrammarExprTree* first_token = tokens.top();
+			std::shared_ptr<GrammarExprTree> first_token = tokens.top();
 			tokens.pop();
 			tokens.push(GrammarExprTree::createOpNode('*', first_token, second_token));
 			continue;
@@ -63,8 +64,8 @@ void private_create_automata(std::list<Token>& input, std::list<Token>::iterator
 	}
 }
 
-void parse_request(std::string rexpr, GrammarExprTree*& result) {
-	std::stack<GrammarExprTree*> tokens;
+std::shared_ptr<GrammarExprTree> parse_request(std::string rexpr) {
+	std::stack<std::shared_ptr<GrammarExprTree>> tokens;
 	std::stack<char> control;
 
 	std::list<Token> input;
@@ -110,5 +111,5 @@ void parse_request(std::string rexpr, GrammarExprTree*& result) {
 	auto it = input.begin();
 	private_create_automata(input, it, tokens, control);
 	assert(control.size() == 0 && tokens.size() == 1);
-	result = tokens.top();
+	return tokens.top();
 }
