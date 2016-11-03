@@ -2,9 +2,16 @@
 #include <set>
 #include <fstream>
 
-#include "../dfalib/dfa.h"
-#include "regex++/regex.h"
+//#include "../dfalib/dfa.h"
+//#include "regex++/regex.h"
+#include <cassert>
+#include <list>
+#include <stack>
+#include <algorithm>
+#include <vector>
+#include <cctype>
 
+#include "parserequest.h"
 //
 //void test() {
 //    for (int i = 0; i < 1000; i++) {
@@ -74,19 +81,31 @@
 
 /* Main program */
 
+
+
+
+
 int main() {
+	std::string input = "result =   (I | I4) ( I5 | I)";
+	assert(std::find(input.begin(), input.end(), '*') == input.end());
+
+	
+	int pos = input.find("=") + 1;
+	GrammarExprTree* new_automata = 0;
+	parse_request(input.substr(pos), new_automata);
+
     // test();
 
-    Automata result;
-    // create_automata("ab", result);
+    //Automata result;
+    //// create_automata("ab", result);
 
-    RegEx re;
+    //RegEx re;
 
-    std::ofstream f("./temp.txt");
-    re.Compile("(((a)))");
-    re.Dump2Stream(f);
-    return 0;
-    
+    //std::ofstream f("./temp.txt");
+    //re.Compile("(((a)))");
+    //re.Dump2Stream(f);
+    //return 0;
+    //
     
 
     //create_automata("a", result);
