@@ -1,0 +1,7 @@
+I0 = dddddd 
+I1 = X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[3:4]
+I2 = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[3:4]
+I4_1 = a  X{4}X*  b  X{3}X*  a
+I4_2 = b  X{4}X*  b  X{3}X*  a
+X = (a|b|c|d)  
+result = (I1 | I2) I4_2
