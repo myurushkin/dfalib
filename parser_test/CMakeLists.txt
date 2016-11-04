@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project(parser_test)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
+set(SOURCE_EXE main.cpp)
+include_directories(DNALangParser)
+add_executable(main ${SOURCE_EXE})
+add_subdirectory(DNALangParser)
+target_link_libraries(main DNALangParser)
