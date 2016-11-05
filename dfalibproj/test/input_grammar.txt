@@ -1,7 +1,9 @@
-I0 = dddddd 
-I1 = X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[3:4]
-I2 = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[3:4]
+I0 = (a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)(a|b|c|d)
+I1_39 = X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[39]
+I1_40 = X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[40]
+
+I2 = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:1]
 I4_1 = a  X{4}X*  b  X{3}X*  a
 I4_2 = b  X{4}X*  b  X{3}X*  a
 X = (a|b|c|d)  
-result = (I1 | I2) I4_2
+result = (I1_39 | I40)

@@ -447,16 +447,34 @@ void RegEx::Dump2Stream(std::ostream& out) {
     for (auto ind : sorted_indexes) {
         new_indexes[ind] = current_index++;
     }
-    
-    out << current_index << std::endl;
-    for (auto& edge : transitions) {
-        out << new_indexes[edge.from] << " " << new_indexes[edge.to] << " " << edge.symbol << std::endl;
-    }
-    
-    out << new_indexes[m_DFATable[0]->m_nStateID] << std::endl;
+
+
+    int state_count = current_index + 1;
+    out << state_count   // count of states
+        << " " <<  finish_states.size()     // count of terminate states
+        << std::endl;
+
+    // terminate states
     for (auto item : finish_states) {
         out << new_indexes[item] << " ";
     }
+    out << std::endl;
+
+    std::vector<int> table(state_count * 4, state_count - 1);
+    for (auto& edge : transitions) {
+        int from = new_indexes[edge.from];
+        int symbol = edge.symbol - 'a';
+        int to = new_indexes[edge.to];
+        table[from * 4 + symbol] = to;
+    }
+
+    for (int i = 0; i < state_count * 4; ++i)
+    {
+        int from = i / 4;
+        int symbol = i % 4;
+        out << from << " " << char('a' + symbol) << " " << table[i] << std::endl;
+    }
+
 }
 
 int RegEx::PreProcessLiterals() {

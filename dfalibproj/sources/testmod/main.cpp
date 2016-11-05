@@ -83,6 +83,7 @@ int main(int argc, char* argv[])
     for (auto it = grammar.begin(); it != grammar.end(); ++it) {
         cout << "reading automata " << it->first << std::endl;
         string automata_path = datapath + "/temp_automata_" + it->first + ".txt";
+        string minimized_automata_path = datapath + "/temp_min_automata_" + it->first + ".txt";
         if (is_file_exist(automata_path) == false)
         {
             RegEx re;
@@ -90,8 +91,27 @@ int main(int argc, char* argv[])
             std::ofstream f(automata_path);
             re.Dump2Stream(f);
         }
+
+        if (is_file_exist(minimized_automata_path) == false)
+        {
+            std::ifstream in(automata_path);
+            auto automata = Automata::read_from_stream(in);
+            in.close();
+
+
+
+            //std::ofstream out(datapath + "B.out");
+            cout << "before : " << automata->n_value;
+            automata = find_min_automata(automata);
+            cout << " after: " << automata->n_value << std::endl;
+
+            std::ofstream out(minimized_automata_path);
+            automata->dump_to_stream(out);
+        }
+
     }
 
+return 0;
   //  std::map<std::string, string> grammar;
 
 
@@ -110,6 +130,7 @@ int main(int argc, char* argv[])
             items.insert(next->name);
         }
     }
+
 
     std::map<std::string, std::shared_ptr<Automata>> processed_items;
     // read processed items
@@ -133,7 +154,7 @@ int main(int argc, char* argv[])
 	std::string input = "result =   (I | I4) ( I5 | I)";
 	assert(std::find(input.begin(), input.end(), '*') == input.end());
 
-         return 0;
+
 	int pos = input.find("=") + 1;
 
 

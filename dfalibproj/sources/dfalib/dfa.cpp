@@ -6,6 +6,49 @@
 #include <list>
 #include <algorithm>
 
+std::shared_ptr<Automata> Automata::read_from_stream(std::ifstream& in)
+{
+    int teminate_state_count;
+
+    std::shared_ptr<Automata> automata(new Automata());
+    in >> automata->n_value >> teminate_state_count;
+    automata->n_value;
+    automata->l_value = 4;
+
+    automata->init();
+    for (int j = 0; j < teminate_state_count; ++j) {
+        int term_index;
+        in >> term_index;
+        automata->terminal_states.insert(term_index);
+    }
+
+    int from, to;
+    char symb;
+
+    int transition_count = 4 * automata->n_value;
+    for (int j = 0; j < transition_count; ++j) {
+        in >> from >> symb >> to;
+        automata->set_transition(from, symb - 'a', to);
+    }
+
+    return automata;
+}
+void Automata::dump_to_stream(std::ofstream& out)
+{
+    out << this->n_value << " " << this->terminal_states_count() << std::endl;
+    for (auto state : this->terminal_states) {
+        out << state << " ";
+    }
+    out << std::endl;
+
+    for (int i = 0; i < this->transitions.size(); ++i)
+    {
+        int from = i / 4;
+        int symb = i % 4;
+        out << from << " " << char(symb + 'a') << " " << this->transitions[i] << std::endl;
+    }
+}
+
 // https://github.com/davinash/regex/tree/master/src
 
 struct Token {
@@ -339,16 +382,17 @@ void find_min_automata(const Automata& automata, Automata& new_automata) {
     std::vector<bool> interesting_states(automata.n_value, false);
     std::queue<int> current_nodes;
     current_nodes.push(0);
+    interesting_states[0] = true;
     while (current_nodes.empty() == false) {
         int node = current_nodes.front();
         current_nodes.pop();
 
-        interesting_states[node] = true;
         for (int i = 0; i < automata.l_value; ++i) {
             int to = automata.get_to_state(node, i);
             if (interesting_states[to] == true)
                 continue;
             current_nodes.push(to);
+            interesting_states[to] = true;
         }
     }
 
