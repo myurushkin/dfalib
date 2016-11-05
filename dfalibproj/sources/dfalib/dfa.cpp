@@ -202,13 +202,44 @@ void create_automata(std::string rexpr, Automata& new_automata) {
     assert(control.size() == 0 && tokens.size() == 1);
 }
 
+void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
+    new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
+    new_automata.n_value = first_automata.state_count() * second_automata.state_count();
+    new_automata.init();
+
+    for (auto first_state : first_automata.terminal_states) {
+        for (int second_state = 0; second_state < second_automata.state_count(); ++second_state) {
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
+        }
+    }
+
+    for (auto second_state : second_automata.terminal_states) {
+        for (int first_state = 0; first_state < first_automata.state_count(); ++first_state) {
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
+        }
+    }
+
+    for (int i = 0; i < first_automata.state_count(); ++i) {
+        for (int j = 0; j < second_automata.state_count(); ++j) {
+            for (int k = 0; k < new_automata.l_value; ++k) {
+                int s_first = first_automata.get_to_state(i, k);
+                int s_second = second_automata.get_to_state(j, k);
+
+                new_automata.set_transition(i * second_automata.state_count() + j, k,
+                    s_first * second_automata.state_count() + s_second);
+            }
+        }
+    }
+}
+
 void intesect_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
 	new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
-	new_automata.n_value = new_automata.l_value * first_automata.state_count() * second_automata.state_count();
+    new_automata.n_value = first_automata.state_count() * second_automata.state_count();
+    new_automata.init();
 
 	for (auto first_state : first_automata.terminal_states) {
 		for (auto second_state : second_automata.terminal_states) {
-			new_automata.terminal_states.insert(first_state * second_automata.terminal_states.size() + second_state);
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
 		}
 	}
 
@@ -482,9 +513,9 @@ bool check_eq(const Automata& automata_first_, const Automata& automata_second_)
 
 std::shared_ptr<Automata> sum_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
 {
-	/*Automata* result = new Automata();
-	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
-	return std::make_shared<Automata>(result);*/
+    Automata* result = new Automata();
+    sum_automata(*first_automata.get(), *second_automata.get(), *result);
+    return std::make_shared<Automata>(*result);
 }
 std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
 {

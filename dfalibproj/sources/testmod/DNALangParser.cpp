@@ -132,9 +132,6 @@ map<string, string> DNALangParser::parseFile(const std::string& file_path)
             for (int i = 0; i < count; i++)
                 newExpression.append(iteratedExpression);
             expressionValue.replace(m_firstExprPosition + 1, iteratedExpression.length() + m.str().length(), newExpression);
-
-            std::string::iterator end_pos = std::remove(expressionValue.begin(), expressionValue.end(), ' ');
-            expressionValue.erase(end_pos, expressionValue.end());
             expressionMap[expression] = expressionValue;
         }
     }

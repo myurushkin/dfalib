@@ -22,7 +22,7 @@ struct Automata {
     }
 
 	int state_count() const {
-		return n_value / l_value;
+        return n_value;
 	}
 
     void init() {
