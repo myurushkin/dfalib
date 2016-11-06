@@ -54,67 +54,51 @@ int main(int argc, char* argv[])
     string resultgraphpath = datapath + "/result_graph.txt";
     string minstringpath = datapath + "/minimum_string.txt";
 
-    if (is_file_exist(regpath) == false)
-    {
-        DNALangParser grammarParser;
-        std::map<string, string> grammar = grammarParser.parseFile(grammarpath);
 
-        std::ofstream f(regpath);
-        f << grammar.size() << std::endl;
-        for (auto it = grammar.begin(); it != grammar.end(); ++ it)
-            f << it->first << std::endl << it->second << std::endl;
-    }
-
-    std::ifstream file(regpath);
-    int count;
-    file >> count;
-    std::map<std::string, string> grammar;
-    string temp;
-    getline(file, temp);
-    for (int i = 0; i < count-1; ++i) {
-        string left, expr;
-        getline(file, left);
-        getline(file, expr);
-        grammar[left] = expr;
-    }
-
-    string result, resultexpr;
-    getline(file, temp);
-    getline(file, resultexpr);
-
+    std::map<std::string, std::shared_ptr<Automata>> processed_items;
+    DNALangParser grammarParser;
+    std::map<string, set<string> > grammar = grammarParser.parseFile(grammarpath);
+    assert(grammar.count("result") != 0);
     for (auto it = grammar.begin(); it != grammar.end(); ++it) {
-        cout << "reading automata " << it->first << std::endl;
-        string automata_path = datapath + "/temp_automata_" + it->first + ".txt";
-        string minimized_automata_path = datapath + "/temp_min_automata_" + it->first + ".txt";
-        if (is_file_exist(automata_path) == false)
-        {
-            string expr = it->second;
+        if (it->first == "result") {
+            continue;
+        }
+        cout << "reading rule " << it->first << std::endl;
+
+        std::shared_ptr<Automata> result;
+        int ind = 0;
+        for (auto jt = it->second.begin(); jt != it->second.end(); ++jt) {
+            cout << "\treading subrule " << ind++ << std::endl;
+
+            string temppath = datapath + "/temp.txt";
+            string expr = *jt;
             std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
             expr.erase(end_pos, expr.end());
             RegEx re;
             re.Compile(expr);
-            std::ofstream f(automata_path);
-            re.Dump2Stream(f);
+            std::ofstream f1(temppath);
+            re.Dump2Stream(f1);
+
+            ifstream f2(temppath);
+            assert(f2.is_open() == true);
+
+
+            auto temp = find_min_automata(Automata::read_from_stream(f2));
+            if (jt == it->second.begin()) {
+                result = temp;
+            } else {
+                result = find_min_automata(sum_automata(result, temp));
+            }
+            cout << "\tCount of states in subrule: " << result->state_count() << std::endl;
         }
-
-        if (is_file_exist(minimized_automata_path) == false)
-        {
-            std::ifstream in(automata_path);
-            auto automata = Automata::read_from_stream(in);
-            in.close();
-
-            cout << "before : " << automata->n_value;
-            automata = find_min_automata(automata);
-            cout << " after: " << automata->n_value << std::endl;
-
-            std::ofstream out(minimized_automata_path);
-            automata->dump_to_stream(out);
-        }
+        processed_items[it->first] = result;
 
     }
 
 
+    std::string resultexpr = *grammar["result"].begin();
     std::shared_ptr<GrammarExprTree> calculations_graph = parse_request(resultexpr);
+
 
     std::set<std::string> items;
     std::queue<std::shared_ptr<GrammarExprTree>> nodes;
@@ -131,14 +115,9 @@ int main(int argc, char* argv[])
     }
 
 
-    std::map<std::string, std::shared_ptr<Automata>> processed_items;
-    for (auto item : items) {
-        string path = datapath + "/temp_min_automata_" + item + ".txt";
-        ifstream f(path);
-        assert(f.is_open() == true);
-        processed_items[item] = Automata::read_from_stream(f);
-    }
+    cout << "Answer calculation..." << std::endl;
     std::shared_ptr<Automata> big = generate_big_automata(calculations_graph, processed_items);
+    cout << "\tCount of states in result: " << big->state_count() << std::endl;
 
     ofstream fres(resultgraphpath);
     big->dump_to_stream(fres);
@@ -161,13 +140,16 @@ int main(int argc, char* argv[])
                 viewed_states.insert(to);
             }
         }
-\
+
         ofstream f(minstringpath);
+        cout << "answers:" << std::endl;
         if (big->terminal_states.empty()) {
+            cout << "NO ANSWER" << std::endl;
             f << "NO ANSWER";
         } else {
             for (auto state : big->terminal_states)
             {
+                cout << min_strings[state] << std::endl;
                 f << min_strings[state] << std::endl;
             }
         }
