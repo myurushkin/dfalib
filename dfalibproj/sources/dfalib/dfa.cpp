@@ -1,9 +1,53 @@
-#include "dfa.h"
+#include "dfalib/dfa.h"
 
 #include <cassert>
 #include <queue>
 #include <stack>
 #include <list>
+#include <algorithm>
+
+std::shared_ptr<Automata> Automata::read_from_stream(std::ifstream& in)
+{
+    int teminate_state_count;
+
+    std::shared_ptr<Automata> automata(new Automata());
+    in >> automata->n_value >> teminate_state_count;
+    automata->n_value;
+    automata->l_value = 4;
+
+    automata->init();
+    for (int j = 0; j < teminate_state_count; ++j) {
+        int term_index;
+        in >> term_index;
+        automata->terminal_states.insert(term_index);
+    }
+
+    int from, to;
+    char symb;
+
+    int transition_count = 4 * automata->n_value;
+    for (int j = 0; j < transition_count; ++j) {
+        in >> from >> symb >> to;
+        automata->set_transition(from, symb - 'a', to);
+    }
+
+    return automata;
+}
+void Automata::dump_to_stream(std::ofstream& out)
+{
+    out << this->n_value << " " << this->terminal_states_count() << std::endl;
+    for (auto state : this->terminal_states) {
+        out << state << " ";
+    }
+    out << std::endl;
+
+    for (int i = 0; i < this->transitions.size(); ++i)
+    {
+        int from = i / 4;
+        int symb = i % 4;
+        out << from << " " << char(symb + 'a') << " " << this->transitions[i] << std::endl;
+    }
+}
 
 // https://github.com/davinash/regex/tree/master/src
 
@@ -158,13 +202,44 @@ void create_automata(std::string rexpr, Automata& new_automata) {
     assert(control.size() == 0 && tokens.size() == 1);
 }
 
+void sum_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
+    new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
+    new_automata.n_value = first_automata.state_count() * second_automata.state_count();
+    new_automata.init();
+
+    for (auto first_state : first_automata.terminal_states) {
+        for (int second_state = 0; second_state < second_automata.state_count(); ++second_state) {
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
+        }
+    }
+
+    for (auto second_state : second_automata.terminal_states) {
+        for (int first_state = 0; first_state < first_automata.state_count(); ++first_state) {
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
+        }
+    }
+
+    for (int i = 0; i < first_automata.state_count(); ++i) {
+        for (int j = 0; j < second_automata.state_count(); ++j) {
+            for (int k = 0; k < new_automata.l_value; ++k) {
+                int s_first = first_automata.get_to_state(i, k);
+                int s_second = second_automata.get_to_state(j, k);
+
+                new_automata.set_transition(i * second_automata.state_count() + j, k,
+                    s_first * second_automata.state_count() + s_second);
+            }
+        }
+    }
+}
+
 void intesect_automata(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
 	new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
-	new_automata.n_value = new_automata.l_value * first_automata.state_count() * second_automata.state_count();
+    new_automata.n_value = first_automata.state_count() * second_automata.state_count();
+    new_automata.init();
 
 	for (auto first_state : first_automata.terminal_states) {
 		for (auto second_state : second_automata.terminal_states) {
-			new_automata.terminal_states.insert(first_state * second_automata.terminal_states.size() + second_state);
+            new_automata.terminal_states.insert(first_state * second_automata.state_count() + second_state);
 		}
 	}
 
@@ -338,16 +413,17 @@ void find_min_automata(const Automata& automata, Automata& new_automata) {
     std::vector<bool> interesting_states(automata.n_value, false);
     std::queue<int> current_nodes;
     current_nodes.push(0);
+    interesting_states[0] = true;
     while (current_nodes.empty() == false) {
         int node = current_nodes.front();
         current_nodes.pop();
 
-        interesting_states[node] = true;
         for (int i = 0; i < automata.l_value; ++i) {
             int to = automata.get_to_state(node, i);
             if (interesting_states[to] == true)
                 continue;
             current_nodes.push(to);
+            interesting_states[to] = true;
         }
     }
 
@@ -437,19 +513,19 @@ bool check_eq(const Automata& automata_first_, const Automata& automata_second_)
 
 std::shared_ptr<Automata> sum_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
 {
-	/*Automata* result = new Automata();
-	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
-	return std::make_shared<Automata>(result);*/
+    Automata* result = new Automata();
+    sum_automata(*first_automata.get(), *second_automata.get(), *result);
+    return std::make_shared<Automata>(*result);
 }
 std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
 {
 	Automata* result = new Automata();
 	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
-	return std::make_shared<Automata>(result);
+    return std::make_shared<Automata>(*result);
 }
 std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& automata)
 {
 	Automata* result = new Automata();
 	find_min_automata(*automata.get(), *result);
-	return std::make_shared<Automata>(result);
+    return std::make_shared<Automata>(*result);
 }
