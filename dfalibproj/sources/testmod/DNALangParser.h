@@ -3,13 +3,14 @@
 
 #include <string>
 #include <map>
+#include <set>
 
 using namespace std;
 
 class DNALangParser
 {
 public:
-    map<string, string> parseFile(const std::string& file_path);
+    map<string, set<string>> parseFile(const std::string& file_path);
 };
 
 #endif

@@ -9,13 +9,12 @@
 #include <regex>
 #include <set>
 #include <stack>
-#include <cctype>
 
 #include "StringUtils.h"
 
 using namespace std;
 
-map<string, string> DNALangParser::parseFile(const std::string& file_path)
+ map<string, set<string>> DNALangParser::parseFile(const std::string& file_path)
 {
     ifstream infile(file_path);
 	string line;
@@ -42,6 +41,8 @@ map<string, string> DNALangParser::parseFile(const std::string& file_path)
 		file.close();
 	}
     map<string, string> expressionMap;
+    map<string, set<string>> resultMap;
+
     map<string, map<string, int[2]>> diapasonMap;
     vector<string> orderedList;
     for (string chain: chains) {
@@ -79,61 +80,73 @@ map<string, string> DNALangParser::parseFile(const std::string& file_path)
         }
     for (string expression: orderedList)
     {
-         string expressionValue = expressionMap[expression];
          map <string, int[2]> diapasons = diapasonMap[expression];
          std::smatch m;
          std::regex e ("\\{[A-Za-z]+\\}");
-         std::set<string> paramIterators;
-         while (std::regex_search (expressionValue,m,e)) {
+         std::set<string> expressions;
+         expressions.insert(expressionMap[expression]);
+         bool findRegexIterator = false;
+         do
+         {
+             std::set<string> modifiedExpressions = expressions;
+             findRegexIterator = false;
+             for (std::set<string>::iterator iter = expressions.begin(); iter != expressions.end(); ++iter)
+             {
+                 string expressionValue = *iter;
+                 while (std::regex_search (expressionValue,m,e)) {
+                       findRegexIterator = true;
+                       string iterationValue = m.str();
+                       iterationValue.erase(iterationValue.length() - 1, iterationValue.length());
+                       iterationValue.erase(0, 1);
+                       std::string tmpValue = expressionValue;
+                       for (int i = diapasons[iterationValue][0]; i < diapasons[iterationValue][1] + 1; i++)
+                       {
+                           std::string modifiedValue = std::regex_replace(tmpValue, std::regex("\\{"+iterationValue+"\\}"), "{" + std::to_string(i) + "}");
+                           modifiedExpressions.insert("(" + modifiedValue + ")");
+                       }
+                       modifiedExpressions.erase(expressionValue);
+                       break;
+                 }
 
-               string iterationValue = m.str();
-               iterationValue.erase(iterationValue.length() - 1, iterationValue.length());
-               iterationValue.erase(0, 1);
-               const bool paramInSet = paramIterators.find(iterationValue) != paramIterators.end();
-               if (paramInSet)
-                   continue;
-               paramIterators.insert(iterationValue);
-               std::string tmpValue = expressionValue;
-               expressionValue.clear();
-               for (int i = diapasons[iterationValue][0]; i < diapasons[iterationValue][1] + 1; i++)
-               {
-                   std::string modifiedValue = std::regex_replace(tmpValue, std::regex("\\{"+iterationValue+"\\}"), "{" + std::to_string(i) + "}");
-                   expressionValue.append("(" + modifiedValue + ")");
-                   if (i < diapasons[iterationValue][1])
-                       expressionValue.append("|");
-               }
-               expressionMap[expression] = expressionValue;
+             }
+             expressions = modifiedExpressions;
          }
+         while (findRegexIterator == true);
+         resultMap[expression] = expressions;
     }
     for (string expression: orderedList)
     {
-        string expressionValue = expressionMap[expression];
-        std::smatch m;
-        std::regex e ("\\{[0-9]+\\}");
-        while (std::regex_search (expressionValue,m,e)) {
-            string iterationValue = m.str();
-            iterationValue.erase(iterationValue.length() - 1, iterationValue.length());
-            iterationValue.erase(0, 1);
-            int count = stoi(iterationValue);
-            std::stack<char> bracketStack;
-            int m_lastExprPosition = m.position();
-            int m_firstExprPosition = m_lastExprPosition - 1;
-            do
-            {
-                if (expressionValue[m_firstExprPosition] ==')')
-                    bracketStack.push(')');
-                if (expressionValue[m_firstExprPosition] == '(')
-                    bracketStack.pop();
-                m_firstExprPosition--;
+        std::set<string> modifiedSet;
+        for (string expressionValue: resultMap[expression])
+        {
+            std::smatch m;
+            std::regex e ("\\{[0-9]+\\}");
+            while (std::regex_search (expressionValue,m,e)) {
+                string iterationValue = m.str();
+                iterationValue.erase(iterationValue.length() - 1, iterationValue.length());
+                iterationValue.erase(0, 1);
+                int count = stoi(iterationValue);
+                std::stack<char> bracketStack;
+                int m_lastExprPosition = m.position();
+                int m_firstExprPosition = m_lastExprPosition - 1;
+                do
+                {
+                    if (expressionValue[m_firstExprPosition] ==')')
+                        bracketStack.push(')');
+                    if (expressionValue[m_firstExprPosition] == '(')
+                        bracketStack.pop();
+                    m_firstExprPosition--;
+                }
+                while (!bracketStack.empty());
+                string iteratedExpression = expressionValue.substr(m_firstExprPosition + 1, m_lastExprPosition - m_firstExprPosition - 1);
+                string newExpression;
+                for (int i = 0; i < count; i++)
+                    newExpression.append(iteratedExpression);
+                expressionValue.replace(m_firstExprPosition + 1, iteratedExpression.length() + m.str().length(), newExpression);
             }
-            while (!bracketStack.empty());
-            string iteratedExpression = expressionValue.substr(m_firstExprPosition + 1, m_lastExprPosition - m_firstExprPosition - 1);
-            string newExpression;
-            for (int i = 0; i < count; i++)
-                newExpression.append(iteratedExpression);
-            expressionValue.replace(m_firstExprPosition + 1, iteratedExpression.length() + m.str().length(), newExpression);
-            expressionMap[expression] = expressionValue;
+            modifiedSet.insert(expressionValue);
         }
+        resultMap[expression] = modifiedSet;
     }
-    return expressionMap;
+    return resultMap;
 }
