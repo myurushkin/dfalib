@@ -26,6 +26,8 @@ using namespace std;
 		string newline;
 		while (getline(file, line))
 		{
+            if (line.size() == 0)
+                continue;
 			line = trim(line);
 			newline.append(line);
 			if (newline.back() != '\\')
