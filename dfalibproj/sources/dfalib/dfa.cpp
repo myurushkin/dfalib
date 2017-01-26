@@ -529,3 +529,41 @@ std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& aut
 	find_min_automata(*automata.get(), *result);
     return std::make_shared<Automata>(*result);
 }
+
+void generate_automata_visualization_script(const std::shared_ptr<Automata>& automata, std::string filepath)
+{
+	std::ofstream file(filepath);
+	file << "digraph finite_state_machine{\n";
+	file << "    rankdir = LR;\n";
+	file << "    size = \"20,20\"\n";
+	file << "    node[shape = doublecircle]; S;\n";
+	file << "    node[shape = point]; qi\n";
+	file << "    node[shape = circle];\n";
+	file << "    qi->S;\n";
+
+	for (int i = 0; i < automata->state_count(); ++i)
+	{
+		for (int symb = 0; symb < 4; ++symb)
+		{
+			int j = automata->get_to_state(i, symb);
+
+			file << "    ";
+			if (i == 0)
+				file << "S";
+			else
+				file << "q" << i;
+
+			file << "->";
+
+			if (j == 0)
+				file << "S";
+			else
+				file << "q" << j;
+
+			file << " [ label = \"" << (char)(symb + 'a') << "\" ];\n";
+		}
+	}
+	
+
+	file << "}";
+}

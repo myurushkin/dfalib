@@ -59,4 +59,6 @@ std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& fir
 std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& automata);
 bool check_eq(const std::shared_ptr<Automata>& automata_first_, const std::shared_ptr<Automata>& automata_second_);
 
+void generate_automata_visualization_script(const std::shared_ptr<Automata>& automata, std::string filepath);
+
 #endif
