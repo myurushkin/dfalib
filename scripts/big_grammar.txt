@@ -1,0 +1,60 @@
+I1 = fghfghX*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[1:20]
+I2 = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:20]
+
+I3_1 = X*  a{a}b{b}c{c}d{d} X{4}X* c{d}d{c}a{b}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_2 = X*  a{a}b{b}d{d}c{c} X{4}X* d{c}c{d}a{b}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_3 = X*  a{a}c{c}b{b}d{d} X{4}X* c{d}a{b}d{c}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_4 = X*  a{a}c{c}d{d}b{b} X{4}X* a{b}c{d}d{c}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_5 = X*  a{a}d{d}b{b}c{c} X{4}X* d{c}a{b}c{d}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_6 = X*  a{a}d{d}c{c}b{b} X{4}X* a{b}d{c}c{d}b{a} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_7 = X*  b{b}a{a}c{c}d{d} X{4}X* c{d}d{c}b{a}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_8 = X*  b{b}a{a}d{d}c{c} X{4}X* d{c}c{d}b{a}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_9 = X*  b{b}c{c}a{a}d{d} X{4}X* c{d}b{a}d{c}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_10 = X*  b{b}c{c}d{d}a{a} X{4}X* b{a}c{d}d{c}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_11 = X*  b{b}d{d}a{a}c{c} X{4}X* d{c}b{a}c{d}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_12 = X*  b{b}d{d}c{c}a{a} X{4}X* b{a}d{c}c{d}a{b} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_13 = X*  c{c}a{a}b{b}d{d} X{4}X* c{d}a{b}b{a}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_14 = X*  c{c}a{a}d{d}b{b} X{4}X* a{b}c{d}b{a}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_15 = X*  c{c}b{b}a{a}d{d} X{4}X* c{d}b{a}a{b}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_16 = X*  c{c}b{b}d{d}a{a} X{4}X* b{a}c{d}a{b}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_17 = X*  c{c}d{d}a{a}b{b} X{4}X* a{b}b{a}c{d}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_18 = X*  c{c}d{d}b{b}a{a} X{4}X* b{a}a{b}c{d}d{c} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_19 = X*  d{d}a{a}b{b}c{c} X{4}X* d{c}a{b}b{a}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_20 = X*  d{d}a{a}c{c}b{b} X{4}X* a{b}d{c}b{a}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_21 = X*  d{d}b{b}a{a}c{c} X{4}X* d{c}b{a}a{b}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_22 = X*  d{d}b{b}c{c}a{a} X{4}X* b{a}d{c}a{b}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_23 = X*  d{d}c{c}a{a}b{b} X{4}X* a{b}b{a}d{c}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+I3_24 = X*  d{d}c{c}b{b}a{a} X{4}X* b{a}a{b}d{c}c{d} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]
+
+I4_1 = X*  b  X{4}X*  a  X{3}X*  c  X*
+I4_2 = X*  c  X{4}X*  d  X{3}X*  b  X*
+I4_3 = X*  d  X{4}X*  d  X{3}X*  c  X*
+I4_4 = X*  b  X{4}X*  d  X{3}X*  c  X*
+I4_5 = X*  b  X{4}X*  a  X{3}X*  b  X*
+I4_6 = X*  d  X{4}X*  b  X{3}X*  a  X*
+I4_7 = X*  c  X{4}X*  c  X{3}X*  d  X*
+I4_8 = X*  b  X{4}X*  b  X{3}X*  a  X*
+I4_9 = X*  a  X{4}X*  a  X{3}X*  b  X*
+I4_10 = X*  b  X{4}X*  a  X{3}X*  a  X*
+I4_11 = X*  a  X{4}X*  b  X{3}X*  a  X*
+I4_12 = X*  b  X{4}X*  a  X{3}X*  d  X*
+I4_13 = X*  b  X{4}X*  c  X{3}X*  d  X*
+I4_14 = X*  c  X{4}X*  b  X{3}X*  a  X*
+I4_15 = X*  c  X{4}X*  d  X{3}X*  d  X*
+I4_16 = X*  c  X{4}X*  a  X{3}X*  b  X*
+I4_17 = X*  a  X{4}X*  b  X{3}X*  b  X*
+I4_18 = X*  a  X{4}X*  b  X{3}X*  c  X*
+I4_19 = X*  a  X{4}X*  b  X{3}X*  d  X*
+I4_20 = X*  d  X{4}X*  c  X{3}X*  d  X*
+I4_21 = X*  c  X{4}X*  d  X{3}X*  a  X*
+I4_22 = X*  a  X{4}X*  d  X{3}X*  c  X*
+I4_23 = X*  d  X{4}X*  c  X{3}X*  c  X*
+I4_24 = X*  d  X{4}X*  c  X{3}X*  b  X*
+I4_25 = X*  d  X{4}X*  c  X{3}X*  a  X*
+I4_26 = X*  c  X{4}X*  d  X{3}X*  c  X*
+I4_27 = X*  d  X{4}X*  a  X{3}X*  b  X*
+I4_28 = X*  a  X{4}X*  c  X{3}X*  d  X*
+X = (a|b|c|d)
+result = I1 I2  \
+	 (I3_1) \
+	 (I4_1 | I4_2 | I4_3 | I4_4 | I4_5 | I4_6 | I4_7 | I4_8 | I4_9 | I4_10 | I4_11 | I4_12 | I4_13 | I4_14 | I4_15 | I4_16 | I4_17 | I4_18 | I4_19 | I4_20 | I4_21 | I4_22 | I4_23 | I4_24 | I4_25 | I4_26 | I4_27 | I4_28) 
