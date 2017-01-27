@@ -92,6 +92,9 @@ int main(int argc, char* argv[])
 
 
             auto temp = find_min_automata(Automata::read_from_stream(f2));
+
+			generate_automata_visualization_script(temp, "E:/projects/projects-git/dfalib/img/fsm-my.gv");
+
             if (jt == it->second.begin()) {
                 result = temp;
             } else {
