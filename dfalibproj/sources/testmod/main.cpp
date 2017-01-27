@@ -46,71 +46,9 @@ bool is_file_exist(string fileName)
     return infile.good();
 }
 
-void find_all_min_strings(std::shared_ptr<Automata>& big, std::vector<int>& min_paths, int currentNode, list<string>& result) {
-    result.clear();
-    if (min_paths[currentNode] == 0) {
-        result.push_back("");
-        return;
-    }
-    for (int prevNode = 0; prevNode < big->state_count(); ++prevNode) {
-        if (min_paths[prevNode] != min_paths[currentNode] - 1) {
-            continue;
-        }
+void find_all_min_strings(std::shared_ptr<Automata>& big, std::vector<int>& min_paths, int currentNode, list<string>& result);
+void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min_strings);
 
-        std::list<int> symbols;
-        for (int i = 0; i < 4; ++i) {
-            if (big->get_to_state(prevNode, i) == currentNode) {
-                symbols.push_back(i);
-            }
-        }
-
-        list<string> subresult;
-        if (symbols.empty() == true) {
-            continue;
-        }
-
-        find_all_min_strings(big, min_paths, prevNode, subresult);
-        for (auto symb : symbols) {
-            for (auto res : subresult) {
-                result.push_back(res.append(1, 'a' + symb));
-            }
-        }
-    }
-}
-
-void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min_strings) {
-    min_strings.clear();
-    std::vector<int> min_paths(big->state_count(), std::numeric_limits<int>::max());
-    min_paths[0] = 0;
-
-    std::queue<int> states;
-    std::set<int> viewed_states;
-    states.push(0);
-    viewed_states.insert(0);
-    min_paths[0] = 0;
-    while (states.empty() == false) {
-        auto from = states.front();
-        states.pop();
-        for (int i = 0; i < 4; ++i) {
-            int to = big->get_to_state(from, i);
-            if (viewed_states.count(to) > 0)
-                continue;
-            min_paths[to] = min_paths[from] + 1;
-            states.push(to);
-            viewed_states.insert(to);
-        }
-    }
-
-    for (int i = 0; i < big->state_count(); ++i) {
-        if (big->is_terminal(i) == false)
-            continue;
-
-        list<string> subresult;
-        find_all_min_strings(big, min_paths, i, subresult);
-        min_strings.insert(min_strings.end(), subresult.begin(), subresult.end());
-    }
-
-}
 
 int main(int argc, char* argv[])
 {
@@ -230,3 +168,70 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+
+void find_all_min_strings(std::shared_ptr<Automata>& big, std::vector<int>& min_paths, int currentNode, list<string>& result) {
+    result.clear();
+    if (min_paths[currentNode] == 0) {
+        result.push_back("");
+        return;
+    }
+    for (int prevNode = 0; prevNode < big->state_count(); ++prevNode) {
+        if (min_paths[prevNode] != min_paths[currentNode] - 1) {
+            continue;
+        }
+
+        std::list<int> symbols;
+        for (int i = 0; i < 4; ++i) {
+            if (big->get_to_state(prevNode, i) == currentNode) {
+                symbols.push_back(i);
+            }
+        }
+
+        list<string> subresult;
+        if (symbols.empty() == true) {
+            continue;
+        }
+
+        find_all_min_strings(big, min_paths, prevNode, subresult);
+        for (auto symb : symbols) {
+            for (auto res : subresult) {
+                result.push_back(res.append(1, 'a' + symb));
+            }
+        }
+    }
+}
+
+void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min_strings) {
+    min_strings.clear();
+    std::vector<int> min_paths(big->state_count(), std::numeric_limits<int>::max());
+    min_paths[0] = 0;
+
+    std::queue<int> states;
+    std::set<int> viewed_states;
+    states.push(0);
+    viewed_states.insert(0);
+    min_paths[0] = 0;
+    while (states.empty() == false) {
+        auto from = states.front();
+        states.pop();
+        for (int i = 0; i < 4; ++i) {
+            int to = big->get_to_state(from, i);
+            if (viewed_states.count(to) > 0)
+                continue;
+            min_paths[to] = min_paths[from] + 1;
+            states.push(to);
+            viewed_states.insert(to);
+        }
+    }
+
+    for (int i = 0; i < big->state_count(); ++i) {
+        if (big->is_terminal(i) == false)
+            continue;
+
+        list<string> subresult;
+        find_all_min_strings(big, min_paths, i, subresult);
+        min_strings.insert(min_strings.end(), subresult.begin(), subresult.end());
+    }
+}
+
