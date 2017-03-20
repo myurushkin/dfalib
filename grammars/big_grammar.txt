@@ -1,60 +1,37 @@
-I1 = X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}   X*,   m=[1:20]
-I2 = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:20]
+GQD = X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}   X*,   m=[1:1]
+IMT = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:1]
 
-I3_1 = X*  a{a}t{t}c{c}g{g} X{4}X* c{g}g{c}a{t}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_2 = X*  a{a}t{t}g{g}c{c} X{4}X* g{c}c{g}a{t}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_3 = X*  a{a}c{c}t{t}g{g} X{4}X* c{g}a{t}g{c}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_4 = X*  a{a}c{c}g{g}t{t} X{4}X* a{t}c{g}g{c}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_5 = X*  a{a}g{g}t{t}c{c} X{4}X* g{c}a{t}c{g}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_6 = X*  a{a}g{g}c{c}t{t} X{4}X* a{t}g{c}c{g}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_7 = X*  t{t}a{a}c{c}g{g} X{4}X* c{g}g{c}t{a}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_8 = X*  t{t}a{a}g{g}c{c} X{4}X* g{c}c{g}t{a}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_9 = X*  t{t}c{c}a{a}g{g} X{4}X* c{g}t{a}g{c}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_10 = X*  t{t}c{c}g{g}a{a} X{4}X* t{a}c{g}g{c}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_11 = X*  t{t}g{g}a{a}c{c} X{4}X* g{c}t{a}c{g}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_12 = X*  t{t}g{g}c{c}a{a} X{4}X* t{a}g{c}c{g}a{t} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_13 = X*  c{c}a{a}t{t}g{g} X{4}X* c{g}a{t}t{a}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_14 = X*  c{c}a{a}g{g}t{t} X{4}X* a{t}c{g}t{a}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_15 = X*  c{c}t{t}a{a}g{g} X{4}X* c{g}t{a}a{t}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_16 = X*  c{c}t{t}g{g}a{a} X{4}X* t{a}c{g}a{t}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_17 = X*  c{c}g{g}a{a}t{t} X{4}X* a{t}t{a}c{g}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_18 = X*  c{c}g{g}t{t}a{a} X{4}X* t{a}a{t}c{g}g{c} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_19 = X*  g{g}a{a}t{t}c{c} X{4}X* g{c}a{t}t{a}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_20 = X*  g{g}a{a}c{c}t{t} X{4}X* a{t}g{c}t{a}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_21 = X*  g{g}t{t}a{a}c{c} X{4}X* g{c}t{a}a{t}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_22 = X*  g{g}t{t}c{c}a{a} X{4}X* t{a}g{c}a{t}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_23 = X*  g{g}c{c}a{a}t{t} X{4}X* a{t}t{a}g{c}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
-I3_24 = X*  g{g}c{c}t{t}a{a} X{4}X* t{a}a{t}g{c}c{g} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
+HRP_1 = X*  a{a}t{t}c{c}g{g} X{4}X* c{g}g{c}a{t}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
 
-I4_1 = X*  t  X{4}X*  c  X{3}X*  g  X*
-I4_2 = X*  t  X{4}X*  t  X{3}X*  a  X*
-I4_3 = X*  c  X{4}X*  t  X{3}X*  a  X*
-I4_4 = X*  g  X{4}X*  a  X{3}X*  t  X*
-I4_5 = X*  a  X{4}X*  t  X{3}X*  c  X*
-I4_6 = X*  g  X{4}X*  c  X{3}X*  c  X*
-I4_7 = X*  t  X{4}X*  a  X{3}X*  c  X*
-I4_8 = X*  c  X{4}X*  c  X{3}X*  g  X*
-I4_9 = X*  t  X{4}X*  g  X{3}X*  c  X*
-I4_10 = X*  g  X{4}X*  c  X{3}X*  g  X*
-I4_11 = X*  g  X{4}X*  c  X{3}X*  t  X*
-I4_12 = X*  g  X{4}X*  g  X{3}X*  c  X*
-I4_13 = X*  c  X{4}X*  g  X{3}X*  a  X*
-I4_14 = X*  g  X{4}X*  c  X{3}X*  a  X*
-I4_15 = X*  a  X{4}X*  a  X{3}X*  t  X*
-I4_16 = X*  c  X{4}X*  a  X{3}X*  t  X*
-I4_17 = X*  t  X{4}X*  a  X{3}X*  t  X*
-I4_18 = X*  c  X{4}X*  g  X{3}X*  g  X*
-I4_19 = X*  a  X{4}X*  t  X{3}X*  a  X*
-I4_20 = X*  c  X{4}X*  g  X{3}X*  c  X*
-I4_21 = X*  a  X{4}X*  g  X{3}X*  c  X*
-I4_22 = X*  g  X{4}X*  t  X{3}X*  a  X*
-I4_23 = X*  c  X{4}X*  g  X{3}X*  t  X*
-I4_24 = X*  a  X{4}X*  t  X{3}X*  g  X*
-I4_25 = X*  a  X{4}X*  c  X{3}X*  g  X*
-I4_26 = X*  a  X{4}X*  t  X{3}X*  t  X*
-I4_27 = X*  t  X{4}X*  a  X{3}X*  g  X*
-I4_28 = X*  t  X{4}X*  a  X{3}X*  a  X*
+TRP_1 = X*  a  X{4}X*  t  X{3}X*  g  X*
+TRP_2 = X*  c  X{4}X*  g  X{3}X*  t  X*
+TRP_3 = X*  t  X{4}X*  a  X{3}X*  g  X*
+TRP_4 = X*  c  X{4}X*  a  X{3}X*  t  X*
+TRP_5 = X*  a  X{4}X*  c  X{3}X*  g  X*
+TRP_6 = X*  t  X{4}X*  a  X{3}X*  t  X*
+TRP_7 = X*  a  X{4}X*  g  X{3}X*  c  X*
+TRP_8 = X*  a  X{4}X*  t  X{3}X*  t  X*
+TRP_9 = X*  a  X{4}X*  t  X{3}X*  c  X*
+TRP_10 = X*  t  X{4}X*  c  X{3}X*  g  X*
+TRP_11 = X*  g  X{4}X*  c  X{3}X*  a  X*
+TRP_12 = X*  c  X{4}X*  g  X{3}X*  c  X*
+TRP_13 = X*  a  X{4}X*  a  X{3}X*  t  X*
+TRP_14 = X*  c  X{4}X*  g  X{3}X*  g  X*
+TRP_15 = X*  t  X{4}X*  g  X{3}X*  c  X*
+TRP_16 = X*  t  X{4}X*  a  X{3}X*  c  X*
+TRP_17 = X*  t  X{4}X*  a  X{3}X*  a  X*
+TRP_18 = X*  g  X{4}X*  g  X{3}X*  c  X*
+TRP_19 = X*  a  X{4}X*  t  X{3}X*  a  X*
+TRP_20 = X*  g  X{4}X*  c  X{3}X*  c  X*
+TRP_21 = X*  g  X{4}X*  c  X{3}X*  g  X*
+TRP_22 = X*  t  X{4}X*  t  X{3}X*  a  X*
+TRP_23 = X*  g  X{4}X*  t  X{3}X*  a  X*
+TRP_24 = X*  c  X{4}X*  c  X{3}X*  g  X*
+TRP_25 = X*  g  X{4}X*  c  X{3}X*  t  X*
+TRP_26 = X*  g  X{4}X*  a  X{3}X*  t  X*
+TRP_27 = X*  c  X{4}X*  t  X{3}X*  a  X*
+TRP_28 = X*  c  X{4}X*  g  X{3}X*  a  X*
 X = (a|c|g|t)
-result = I1 I2  \
-	 (I3_1) \
-	 (I4_1) 
+result = GQD IMT  \
+	 (HRP_1) \
+	 (TRP_1 | TRP_2 | TRP_3 | TRP_4 | TRP_5 | TRP_6 | TRP_7 | TRP_8 | TRP_9 | TRP_10 | TRP_11 | TRP_12 | TRP_13 | TRP_14 | TRP_15 | TRP_16 | TRP_17 | TRP_18 | TRP_19 | TRP_20 | TRP_21 | TRP_22 | TRP_23 | TRP_24 | TRP_25 | TRP_26 | TRP_27 | TRP_28) 

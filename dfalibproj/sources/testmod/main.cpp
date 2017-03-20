@@ -1,4 +1,4 @@
-#include <iostream>
+//#include <iostream>
 #include <set>
 #include <fstream>
 #include <queue>
@@ -79,12 +79,12 @@ int main(int argc, char* argv[])
         if (it->first == "result") {
             continue;
         }
-        cout << "reading rule " << it->first << std::endl;
+        //cout << "reading rule " << it->first << std::endl;
 
         std::shared_ptr<Automata> result;
         int ind = 0;
         for (auto jt = it->second.begin(); jt != it->second.end(); ++jt) {
-            cout << "\treading subrule " << ind++ << std::endl;
+            //cout << "\treading subrule " << ind++ << std::endl;
 
             string temppath = tmpdir + "/temp.txt";
             string expr = *jt;
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
             } else {
                 result = find_min_automata(sum_automata(result, temp));
             }
-            cout << "\tCount of states in subrule: " << result->state_count() << std::endl;
+            //cout << "\tCount of states in subrule: " << result->state_count() << std::endl;
         }
         processed_items[it->first] = result;
 
@@ -134,9 +134,9 @@ int main(int argc, char* argv[])
     }
 
 
-    cout << "Answer calculation..." << std::endl;
+    //cout << "Answer calculation..." << std::endl;
     std::shared_ptr<Automata> big = generate_big_automata(calculations_graph, processed_items);
-    cout << "\tCount of states in result: " << big->state_count() << std::endl;
+    //cout << "\tCount of states in result: " << big->state_count() << std::endl;
 
     ofstream fres(resultgraphpath);
     big->dump_to_stream(fres);
@@ -164,14 +164,14 @@ int main(int argc, char* argv[])
         find_all_min_strings(big, min_strings);
 
         ofstream f(minstringpath);
-        cout << "answers:" << std::endl;
+        //cout << "answers:" << std::endl;
         if (min_strings.empty()) {
-            cout << "NO ANSWER" << std::endl;
+            //cout << "NO ANSWER" << std::endl;
             f << "NO ANSWER";
         } else {
             for (auto& nextstring : min_strings)
             {
-                cout << nextstring << std::endl;
+                //cout << nextstring << std::endl;
                 f << nextstring << std::endl;
             }
         }
