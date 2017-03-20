@@ -3,11 +3,12 @@ __author__ = 'misha'
 import itertools
 
 
-result = "big_grammar.txt"
+project_dir = r"E:\projects-git\dfalib\input"
+result = "{}/big_grammar.txt".format(project_dir)
 
 
 def createI1():
-    return ("I1", "X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}  X{3}X*  d{m}   X*,   m=[1:20]")
+    return ("I1", "X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}   X*,   m=[1:20]")
 
 def createI2():
     return ("I2", "X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:20]")
@@ -21,12 +22,12 @@ items3 = []
 items4 = []
 
 opposite_chars = {}
-opposite_chars['a'] = 'b'
-opposite_chars['b'] = 'a'
-opposite_chars['c'] = 'd'
-opposite_chars['d'] = 'c'
+opposite_chars['a'] = 't'
+opposite_chars['t'] = 'a'
+opposite_chars['c'] = 'g'
+opposite_chars['g'] = 'c'
 
-perms = itertools.permutations(['a', 'b', 'c', 'd'])
+perms = itertools.permutations(['a', 't', 'c', 'g'])
 index = 1
 for item in perms:
     s1 = ""
@@ -34,7 +35,7 @@ for item in perms:
     for ch in item:
         s1 = s1 + "{}{{{}}}".format(ch, ch)
         s2 = "{}{{{}}}".format(opposite_chars[ch], ch) + s2
-    items3.append(("I3_{}".format(index), "X*  {} X{{4}}X* {} X*, a=[1:1], b=[1:1], c=[1:1], d=[1:1]".format(s1, s2)))
+    items3.append(("I3_{}".format(index), "X*  {} X{{4}}X* {} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]".format(s1, s2)))
     index += 1
 
 # index = 1
@@ -63,15 +64,10 @@ for item in perms:
 # C.G-C
 # C.C-G
 
-# A - a
-# T - b
-# C - c
-# G - d
-
-patterns4 = [ "AAT", "ATA", "AGC", "ACG",
-              "TAT", "TTA", "TGC", "TCG",
-              "GAT", "GTA", "GGC", "GCG",
-              "CAT", "CTA", "CGC", "CCG"]
+patterns4 = [ "aat", "ata", "agc", "acg",
+              "tat", "tta", "tgc", "tcg",
+              "gat", "gta", "ggc", "gcg",
+              "cat", "cta", "cgc", "ccg"]
 
 patterns4_all = []
 for item in patterns4:
@@ -82,10 +78,6 @@ patterns4_all = list(set(patterns4_all))
 
 index = 1
 for item in patterns4_all:
-    item = item.replace("A", "a")\
-        .replace("T", "b")\
-        .replace("C", "c")\
-        .replace("G", "d")
     ch1 = item[0]
     ch2 = item[1]
     ch3 = item[2]
@@ -105,7 +97,7 @@ with open(result, "w") as f:
     for item in items4:
         f.write("{} = {}\n".format(item[0], item[1]))
 
-    f.write("X = (a|b|c|d)\n")
+    f.write("X = (a|c|g|t)\n")
 
     f.write("result = {} {}  \\\n\t ({}) \\\n\t ({}) \n".format(i1[0], i2[0], " | ".join([x[0] for x in items3])
                                                                 , " | ".join([x[0] for x in items4])))

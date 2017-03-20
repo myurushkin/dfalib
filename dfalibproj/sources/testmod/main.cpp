@@ -12,6 +12,8 @@
 #include <memory>
 #include <string>
 
+#include "json.hpp"
+
 #include "regex/regex.h"
 #include "DNALangParser.h"
 #include "./dfalib/dfa.h"
@@ -19,6 +21,7 @@
 
 using std::string;
 using std::map;
+using json = nlohmann::json;
 
 std::shared_ptr<Automata> generate_big_automata(std::shared_ptr<GrammarExprTree> root, std::map<std::string, std::shared_ptr<Automata>>& processed_items) {
 	if (root->childs.empty()) {
@@ -55,13 +58,18 @@ int main(int argc, char* argv[])
     if (argc != 2) {
         return 1;
     }
-        
-    string datapath = argv[1];
-    string grammarpath = datapath + "/big_grammar.txt";
-    string regpath = datapath + "/parsed_grammar.txt";
-    string resultgraphpath = datapath + "/result_graph.txt";
-    string minstringpath = datapath + "/minimum_string.txt";
 
+    std::ifstream inf(argv[1]);
+    std::string config((std::istreambuf_iterator<char>(inf)),
+        std::istreambuf_iterator<char>());
+    json obj = json::parse(config);
+
+    string grammarpath = obj["grammar-filepath"].get<std::string>();
+
+    string tmpdir = obj["tmp-dirpath"].get<std::string>();
+    string regpath = tmpdir + "/parsed_grammar.txt";
+    string resultgraphpath = tmpdir + "/result_graph.txt";
+    string minstringpath = obj["output-filepath"].get<std::string>();
 
     std::map<std::string, std::shared_ptr<Automata>> processed_items;
     DNALangParser grammarParser;
@@ -78,7 +86,7 @@ int main(int argc, char* argv[])
         for (auto jt = it->second.begin(); jt != it->second.end(); ++jt) {
             cout << "\treading subrule " << ind++ << std::endl;
 
-            string temppath = datapath + "/temp.txt";
+            string temppath = tmpdir + "/temp.txt";
             string expr = *jt;
             std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
             expr.erase(end_pos, expr.end());
@@ -93,7 +101,7 @@ int main(int argc, char* argv[])
 
             auto temp = find_min_automata(Automata::read_from_stream(f2));
 
-			generate_automata_visualization_script(temp, "E:/projects/projects-git/dfalib/img/fsm-my.gv");
+			// generate_automata_visualization_script(temp, "E:/projects/projects-git/dfalib/img/fsm-my.gv");
 
             if (jt == it->second.begin()) {
                 result = temp;
@@ -172,7 +180,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-
+std::map<char, char> nsymb2symb = { { 'a', 'a' },{ 'c', 'c' },{ 'b', 'g' },{ 'd', 't' } };
 void find_all_min_strings(std::shared_ptr<Automata>& big, std::vector<int>& min_paths, int currentNode, list<string>& result) {
     result.clear();
     if (min_paths[currentNode] == 0) {
@@ -199,7 +207,7 @@ void find_all_min_strings(std::shared_ptr<Automata>& big, std::vector<int>& min_
         find_all_min_strings(big, min_paths, prevNode, subresult);
         for (auto symb : symbols) {
             for (auto res : subresult) {
-                result.push_back(res.append(1, 'a' + symb));
+                result.push_back(res.append(1, nsymb2symb['a' + symb]));
             }
         }
     }
@@ -237,4 +245,3 @@ void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min
         min_strings.insert(min_strings.end(), subresult.begin(), subresult.end());
     }
 }
-

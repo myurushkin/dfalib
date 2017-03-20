@@ -460,10 +460,13 @@ void RegEx::Dump2Stream(std::ostream& out) {
     }
     out << std::endl;
 
+    std::map<char, char> symb2nsymb = { {'a', 'a'}, {'c', 'c'}, {'g', 'b'}, {'t', 'd'} };
+
+
     std::vector<int> table(state_count * 4, state_count - 1);
     for (auto& edge : transitions) {
         int from = new_indexes[edge.from];
-        int symbol = edge.symbol - 'a';
+        int symbol = symb2nsymb[edge.symbol] - 'a';
         int to = new_indexes[edge.to];
         table[from * 4 + symbol] = to;
     }
