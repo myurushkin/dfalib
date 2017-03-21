@@ -90,6 +90,12 @@ def find_complimentary_position(string, position, left_border):
             return -1
 
 def is_triplex(string, first_position, second_position, third_position):
+    if (third_position - second_position) < 4:
+        return False
+    if (second_position - first_position) < 4:
+        return False
+    if (first_position < second_position < third_position) == False:
+        return False
     if (first_position < 0)or(second_position < 0) or (third_position < 0):
         return False
     if (first_position > len(string) - 1)or(second_position > len(string) - 1) or (third_position > len(string) - 1):
@@ -104,30 +110,92 @@ def is_triplex(string, first_position, second_position, third_position):
         return True
     return False
 
+
+def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos, first_triplex_third_pos, strength):
+    if (first_triplex_second_pos - first_triplex_first_pos < 3):
+        return strength
+    max_strength = strength
+    for l in range(1, first_triplex_second_pos - first_triplex_first_pos):
+        another_triplex_first_position = first_triplex_first_pos + l
+        another_triplex_second_position = first_triplex_second_pos - l
+        another_triplex_third_positon = first_triplex_third_pos + l
+        print(another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon)
+        if is_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon):
+            strength = find_next_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon, strength + 1)
+        if (strength > max_strength):
+            max_strength = strength
+    return max_strength
+
 def max_triplex_strength(string):
     strength = 0
     max_strength = 0
     for i in range(1, len(string) - 1):
-        for j in range(i + 1, len(string) - 1):
+        for j in range(i + 4, len(string) - 1):
             complimentary_position = find_complimentary_position(string, i, j)
             if complimentary_position == -1:
                 continue
             strength = 1
-            for k in range(0, i):
-                first_triplex_position = k
-                for l in range(1, i - first_triplex_position):
-                    another_triplex_first_position = first_triplex_position + l
-                    another_triplex_second_position = i - l
-                    another_triplex_third_positon = complimentary_position + l
-                    if is_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon):
-                        strength = 2
-                        print(string[first_triplex_position] + string[i]+string[complimentary_position])
-                        print(string[another_triplex_first_position] + string[another_triplex_second_position]+string[another_triplex_third_positon])
-
             if strength > max_strength:
                 max_strength = strength
+            # for k in range(0, i):
+            #     first_triplex_position = k
+            #     print(first_triplex_position, i, complimentary_position)
+            #
+            #     strength = find_next_triplex(string, first_triplex_position, i, complimentary_position, strength)
+            #     if strength > max_strength:
+            #         max_strength = strength
+            for k in range(0, i):
+                first_triplex_position = k
+                if (i - first_triplex_position) < 3:
+                    continue
+                for l in range(1, i - first_triplex_position):
+                    second_triplex_first_position = first_triplex_position + l
+                    second_triplex_second_position = i - l
+                    second_triplex_third_positon = complimentary_position + l
+                    if is_triplex(string, second_triplex_first_position, second_triplex_second_position,
+                                  second_triplex_third_positon):
+                        strength = 2
+                        if strength > max_strength:
+                            max_strength = strength
+                        if (second_triplex_second_position - second_triplex_first_position) < 3:
+                            continue
+                        for s in range(1, second_triplex_second_position - second_triplex_first_position):
+                             third_triplex_first_position = second_triplex_first_position + s
+                             third_triplex_second_position = second_triplex_second_position - s
+                             third_triplex_third_positon = second_triplex_third_positon + s
+                             if is_triplex(string, third_triplex_first_position, third_triplex_second_position,
+                                           third_triplex_third_positon):
+                                 strength = 3
+
+                                 if strength > max_strength:
+                                     max_strength = strength
+                             if (third_triplex_second_position - third_triplex_first_position) < 3:
+                                 continue
+                             for r in range(1, third_triplex_second_position - third_triplex_first_position):
+                                 fourth_triplex_first_position = third_triplex_first_position + r
+                                 fourth_triplex_second_position = third_triplex_second_position - r
+                                 fourth_triplex_third_positon = third_triplex_third_positon + r
+                                 if is_triplex(string, fourth_triplex_first_position, fourth_triplex_second_position,
+                                               fourth_triplex_third_positon):
+                                     strength = 4
+                                     if strength > max_strength:
+                                         max_strength = strength
+                                 if (fourth_triplex_second_position - fourth_triplex_first_position) < 3:
+                                     continue
+                                 for t in range(1, fourth_triplex_second_position - fourth_triplex_first_position):
+                                     fifth_triplex_first_position = fourth_triplex_first_position + t
+                                     fifth_triplex_second_position = fourth_triplex_second_position - t
+                                     fifth_triplex_third_positon = fourth_triplex_third_positon + t
+                                     if is_triplex(string, fifth_triplex_first_position,
+                                                   fifth_triplex_second_position,
+                                                   fifth_triplex_third_positon):
+                                         strength = 5
+                                         if strength > max_strength:
+                                             max_strength = strength
+
+
     return max_strength
 
 
 def analyze_string(string):
-    return (max_gquadruplex_strength(string, "g"), max_gquadruplex_strength(string, "c"), max_hairpin_strength(string))
+    return (max_gquadruplex_strength(string, "g"), max_gquadruplex_strength(string, "c"), max_hairpin_strength(string), max_triplex_strength(string))
