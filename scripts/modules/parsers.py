@@ -1,4 +1,33 @@
 
+def hairpin_weight(hairpin, tail_left):
+    weight = 0
+    tail_center_right = tail_left + 5
+    tail_size = min(tail_left + 1, len(hairpin) - tail_center_right)
+
+    for i in range(tail_size):
+        if hairpin[tail_left - i] == 'a' and hairpin[tail_center_right + i] == 't':
+            weight += 1
+        elif hairpin[tail_left - i] == 't' and hairpin[tail_center_right + i] == 'a':
+            weight += 1
+        elif hairpin[tail_left - i] == 'c' and hairpin[tail_center_right + i] == 'g':
+            weight += 1
+        elif hairpin[tail_left - i] == 'g' and hairpin[tail_center_right + i] == 'c':
+            weight += 1
+        else:
+            return weight
+    return weight
+
+
+def max_hairpin_weight(string):
+    cw = 0
+    tail_index = 0
+    for i in range(len(string)):
+        cw_new = hairpin_weight(string, i)
+        if cw_new > cw:
+            cw = cw_new
+            tail_index = i
+    return cw, tail_index
+
 
 def traverse_gquadruplex(string, ch, last_pos, last_group_id, groups):
     MinSBetweenGroups = 3
@@ -40,4 +69,4 @@ def max_gquadruplex_strength(string, ch):
 
 
 def analyze_string(string):
-    return (max_gquadruplex_strength(string, "g"), max_gquadruplex_strength(string, "c"))
+    return (max_gquadruplex_strength(string, "g"), max_gquadruplex_strength(string, "c"), max_hairpin_weight(string))
