@@ -16,6 +16,15 @@ def is_less_equal(v1, v2):
             return False
     return True
 
+
+def is_less(v1, v2):
+    if not is_less_equal(v1, v2):
+        return False
+    if v1 == v2:
+        return False
+    return True
+
+
 result_dirpath = r"/home/misha/projects-git/dfalib/results"
 suffixes = ["default", "18", "19", "20"]
 expected_lengths = [17, 18, 19, 20]
@@ -38,13 +47,13 @@ for i in range(len(suffixes)):
 
             good = True
             for _, other_coefs in best_sequences:
-                if is_less_equal(seq_coefs, other_coefs):
+                if is_less(seq_coefs, other_coefs):
                     good = False
                     break
             if good == True:
                 best_sequences.append((seq, seq_coefs))
                 best_sequences = list(filter(
-                    lambda x: x[0] == seq or not is_less_equal(x[1], seq_coefs), best_sequences))
+                    lambda x: not is_less(x[1], seq_coefs), best_sequences))
         with open(os.path.join(result_dirpath, "result_min_{}.txt".format(suffix)), "w") as f:
             for seq in best_sequences:
-                f.write("{}\n".format(seq))
+                f.write("{} - {}\n".format(seq[0], seq[1]))
