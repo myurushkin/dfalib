@@ -236,6 +236,7 @@ void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min
         }
     }
 
+    assert(big->terminal_states.size() == 1);
     for (int i = 0; i < big->state_count(); ++i) {
         if (big->is_terminal(i) == false)
             continue;
