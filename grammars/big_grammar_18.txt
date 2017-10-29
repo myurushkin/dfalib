@@ -31,7 +31,9 @@ TRP_25 = X*  g  X{4}X*  c  X{3}X*  t  X*
 TRP_26 = X*  g  X{4}X*  a  X{3}X*  t  X*
 TRP_27 = X*  c  X{4}X*  t  X{3}X*  a  X*
 TRP_28 = X*  c  X{4}X*  g  X{3}X*  a  X*
+LEN_18 = X X X X X X X X X X X X X X X X X X
 X = (a|c|g|t)
 result = GQD IMT  \
 	 (HRP_1) \
+	 LEN_18 \
 	 (TRP_1 | TRP_2 | TRP_3 | TRP_4 | TRP_5 | TRP_6 | TRP_7 | TRP_8 | TRP_9 | TRP_10 | TRP_11 | TRP_12 | TRP_13 | TRP_14 | TRP_15 | TRP_16 | TRP_17 | TRP_18 | TRP_19 | TRP_20 | TRP_21 | TRP_22 | TRP_23 | TRP_24 | TRP_25 | TRP_26 | TRP_27 | TRP_28) 
