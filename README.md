@@ -11,9 +11,8 @@ In dfalib the following algorithms are implemented:
   
 ## Program compilation:
 
-PROJECTS_DIR="path/to/dir/for/dfalib"
-
 ``` bash
+PROJECTS_DIR="path/to/dir/for/dfalib"
 cd $PROJECTS_DIR
 git clone https://github.com/myurushkin/dfalib
 mkdir build
