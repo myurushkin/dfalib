@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
         with open(output_path, "w") as f:
             for line in best_sequences:
-                f.write(best_sequences)
+                f.write(line)
                 f.write("\n")
 
         shutil.rmtree(tmp_dirpath)
