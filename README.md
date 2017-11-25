@@ -7,9 +7,9 @@ In dfalib the following algorithms are implemented:
   - DFA minimization.
   - intersection of two DFAs.
   
-Instructions
+# Instructions
 
-
+compilation of program
 cd <projects-dir>
 git clone https://github.com/myurushkin/dfalib
 mkdir build
