@@ -16,7 +16,6 @@ using namespace std;
 
  map<string, set<string>> DNALangParser::parseFile(const std::string& file_path)
 {
-    ifstream infile(file_path);
 	string line;
 	ifstream file(file_path);
 	list<string> chains;

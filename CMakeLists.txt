@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
-project(dfalibproj)
 
-add_subdirectory(sources)
+add_subdirectory(dfalibproj)
+add_subdirectory(parser_test)
+
 

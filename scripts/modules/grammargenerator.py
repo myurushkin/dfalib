@@ -4,30 +4,39 @@ class GrammarGenerator:
     def __init__(self):
         pass
 
-    def create(self, hrps=[]):
+    def create(self, find_GQD, find_IMT, find_TRP, find_HRP, hrps=[]):
         result = ""
 
-        i1 = ("GQD", self.generate_gquadruplex(1))
-        result += "{} = {}\n".format(i1[0], i1[1])
+        names = []
+        if find_GQD == True:
+            i1 = ("GQD", self.generate_gquadruplex(1))
+            result += "{} = {}\n".format(i1[0], i1[1])
+            result += "\n"
+            names.append("({})".format(i1[0]))
 
-        i2 = ("IMT", self.gerate_imotiv(1))
-        result += "{} = {}\n\n".format(i2[0], i2[1])
+        if find_IMT == True:
+            i2 = ("IMT", self.gerate_imotiv(1))
+            result += "{} = {}\n".format(i2[0], i2[1])
+            result += "\n"
+            names.append("({})".format(i2[0]))
 
-        items3 = self.generate_hairpins_from_set(hrps)
-        items3 = [("HRP_" + str(i + 1), items3[i]) for i in range(len(items3))]
-
-        items4 = self.generate_triplexes()
-        items4 = [("TRP_" + str(i+1), items4[i]) for i in range(len(items4))]
-
-        for item in items3:
-            result += "{} = {}\n".format(item[0], item[1])
-        result +=  "\n"
-        for item in items4:
-            result += "{} = {}\n".format(item[0], item[1])
+        if find_HRP == True:
+            items3 = self.generate_hairpins_from_set(hrps)
+            items3 = [("HRP_" + str(i + 1), items3[i]) for i in range(len(items3))]
+            for item in items3:
+                result += "{} = {}\n".format(item[0], item[1])
+            result += "\n"
+            names.append("({})".format(" | ".join(x[0] for x in items3)))
+        if find_TRP == True:
+            items4 = self.generate_triplexes()
+            items4 = [("TRP_" + str(i+1), items4[i]) for i in range(len(items4))]
+            for item in items4:
+                result += "{} = {}\n".format(item[0], item[1])
+            result += "\n"
+            names.append("({})".format(" | ".join(x[0] for x in items4)))
 
         result += "X = (a|c|g|t)\n"
-        result += "result = {} {}  \\\n\t ({}) \\\n\t ({}) \n".format(i1[0], i2[0], " | ".join([x[0] for x in items3])
-                                                                    , " | ".join([x[0] for x in items4]))
+        result += "result = {}".format("\\\n\t".join(names))
         return result
 
     def generate_gquadruplex(self, count = 1):
