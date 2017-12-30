@@ -10,19 +10,34 @@ import tempfile
 import argparse
 import tqdm
 
+# /home/misha/projects-git/dfalib-build/build/dfalibproj/sources/testmod/testmod --find-GQD 1 --find-IMT 1 --find-TRP 1 "./output.txt"
+
+# /home/misha/projects-git/dfalib-build/build/dfalibproj/sources/testmod/testmod --find-GQD 1 --find-IMT 1 --find-TRP 1 "./output.txt"
+
+#"${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" —find-GQD 1 —find-IMT 1 —find-HRP 1 "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
+
+def is_equal(v1, v2):
+    return v1 == v2
 
 def is_less_equal(v1, v2):
+    if is_equal(v1, v2):
+        return True
     assert len(v1) == len(v2)
     for i in range(len(v1)):
         if v1[i] > v2[i]:
             return False
     return True
 
+def is_less(v1, v2):
+    if is_equal(v1, v2):
+        return False
+    return is_less_equal(v1, v2)
+
 """
 В цикле генерим разные грамматики, скармливаем оптимизатору и находим
 самые сильные соединения
 """
-def processLines(lines, best_sequences, verbose=False):
+def processLines(lines, best_sequences, find_params, verbose=False):
     if len(lines) == 0:
         return best_sequences
 
@@ -34,16 +49,16 @@ def processLines(lines, best_sequences, verbose=False):
 
     space = lines if verbose==False else tqdm.tqdm(lines)
     for seq in space:
-        seq_coefs = parsers.analyze_string(seq)
+        seq_coefs = parsers.analyze_string(seq, find_params)
         good = True
         for _, other_coefs in best_sequences:
-            if is_less_equal(seq_coefs, other_coefs):
+            if is_less(seq_coefs, other_coefs):
                 good = False
                 break
         if good == True:
             best_sequences.append((seq, seq_coefs))
             best_sequences = list(filter(
-                lambda x: x[0] == seq or not is_less_equal(x[1], seq_coefs), best_sequences))
+                lambda x: not is_less(x[1], seq_coefs), best_sequences))
     return best_sequences
 
 def calculate_min_lines(next_grammar_path, config_path, tmp_dirpath, executor_result_path, executor):
@@ -98,7 +113,7 @@ if __name__ == "__main__":
         if find_HRP == False:
             grammar = gen.create(find_GQD, find_IMT, find_TRP, find_HRP)
             lines = calculate_min_lines(next_grammar_path, config_path, tmp_dirpath, executor_result_path, executor)
-            best_sequences = processLines(lines, best_sequences, verbose=True)
+            best_sequences = processLines(lines, best_sequences, [find_GQD, find_IMT, find_TRP, find_HRP], verbose=True)
         else:
             batch = []
             t1=time.time()
@@ -115,7 +130,7 @@ if __name__ == "__main__":
                 lines = calculate_min_lines(next_grammar_path, config_path, tmp_dirpath, executor_result_path, executor)
                 t2 = time.time()
                 dt = t2 - t1
-                best_sequences = processLines(lines, best_sequences)
+                best_sequences = processLines(lines, best_sequences, [find_GQD, find_IMT, find_TRP, find_HRP])
                 print("progress: {}, time till finish: {}".format(
                     int(progress * 100 / len(hrps)), dt / progress * (len(hrps) - progress)))
 

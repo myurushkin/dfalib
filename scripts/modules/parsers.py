@@ -143,5 +143,24 @@ def max_triplex_strength(string):
     return max_strength
 
 
-def analyze_string(string):
-    return (max_gquadruplex_strength(string, "g"), max_gquadruplex_strength(string, "c"), max_hairpin_strength(string), max_triplex_strength(string))
+def analyze_string(string, find_params):
+    result = []
+    if find_params[0] == True:
+        result.append(max_gquadruplex_strength(string, "g"))
+    else:
+        result.append(-1)
+    if find_params[1] == True:
+        result.append(max_gquadruplex_strength(string, "c"))
+    else:
+        result.append(-1)
+    if find_params[3] == True:
+        result.append(max_hairpin_strength(string))
+    else:
+        result.append(-1)
+    if find_params[2] == True:
+        result.append(max_triplex_strength(string))
+    else:
+        result.append(-1)
+    return tuple(result)
+
+# find_GQD, find_IMT, find_TRP, find_HRP
