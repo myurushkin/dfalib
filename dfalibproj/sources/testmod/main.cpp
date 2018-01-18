@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
         //cout << "answers:" << std::endl;
         if (min_strings.empty()) {
             //cout << "NO ANSWER" << std::endl;
-            f << "NO ANSWER";
+            // f << "NO ANSWER";
         } else {
             for (auto& nextstring : min_strings)
             {
@@ -236,7 +236,7 @@ void find_all_min_strings(std::shared_ptr<Automata>& big, std::list<string>& min
         }
     }
 
-    assert(big->terminal_states.size() == 1);
+    // assert(big->terminal_states.size() == 1);
     for (int i = 0; i < big->state_count(); ++i) {
         if (big->is_terminal(i) == false)
             continue;

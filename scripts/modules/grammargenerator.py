@@ -4,18 +4,18 @@ class GrammarGenerator:
     def __init__(self):
         pass
 
-    def create(self, find_GQD, find_IMT, find_TRP, find_HRP, hrps=[]):
+    def create(self, find_GQD, find_IMT, find_TRP, find_HRP, min_size, hrps=[]):
         result = ""
 
         names = []
         if find_GQD == True:
-            i1 = ("GQD", self.generate_gquadruplex(1))
+            i1 = ("GQD", self.generate_gquadruplex(20))
             result += "{} = {}\n".format(i1[0], i1[1])
             result += "\n"
             names.append("({})".format(i1[0]))
 
         if find_IMT == True:
-            i2 = ("IMT", self.gerate_imotiv(1))
+            i2 = ("IMT", self.gerate_imotiv(20, 20))
             result += "{} = {}\n".format(i2[0], i2[1])
             result += "\n"
             names.append("({})".format(i2[0]))
@@ -35,6 +35,9 @@ class GrammarGenerator:
             result += "\n"
             names.append("({})".format(" | ".join(x[0] for x in items4)))
 
+        if min_size > 0:
+            names.append("LENGTH")
+            result += "LENGTH = {}\n".format("X" * min_size)
         result += "X = (a|c|g|t)\n"
         result += "result = {}".format("\\\n\t".join(names))
         return result
@@ -42,8 +45,9 @@ class GrammarGenerator:
     def generate_gquadruplex(self, count = 1):
         return "X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}   X*" + ",   m=[1:{}]".format(count)
 
-    def gerate_imotiv(self, count):
-        return "X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*" + ",   a=[1:{}]".format(count)
+    def gerate_imotiv(self, count1, count2):
+        return "X*  c{a}  X{3}X*  c{b}  X{3}X*  c{a}  X{3}X*  c{b}   X*" + ",   a=[1:{}], b=[1:{}]".format(str(count1), str(count2))
+
 
     def generate_hairpins_from_set(self, hrps):
         result = []
@@ -56,7 +60,7 @@ class GrammarGenerator:
 
         for left_part in hrps:
             right_part = "".join(opposite_chars[x] for x in left_part)
-            result.append("X*  {} X{{4}}X* {} X*".format(left_part, right_part))
+            result.append("X*  {} X{{3}}X* {} X*".format(left_part, right_part))
         return result
 
 
@@ -118,6 +122,6 @@ class GrammarGenerator:
             ch1 = item[0]
             ch2 = item[1]
             ch3 = item[2]
-            result.append("X*  {}  X{{4}}X*  {}  X{{3}}X*  {}  X*".format(ch1, ch2, ch3))
+            result.append("X*  {}  X{{3}}X*  {}  X{{3}}X*  {}  X*".format(ch1, ch2, ch3))
             index += 1
         return result

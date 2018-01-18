@@ -38,13 +38,22 @@ def is_less(v1, v2):
 самые сильные соединения
 """
 def processLines(lines, best_sequences, find_params, verbose=False):
+    if len(best_sequences) > 0:
+        print("len of best_sequences={}".format(len(best_sequences[0][0])))
+        for i in range(1, len(best_sequences)):
+            assert len(best_sequences[i][0]) == len(best_sequences[0][0])
+    if len(lines) > 0:
+        print("len of new lines={}".format(len(lines[0])))
+        for i in range(1, len(lines)):
+            assert len(lines[i]) == len(lines[0])
+
     if len(lines) == 0:
         return best_sequences
 
     if len(best_sequences) > 0:
-        if len(best_sequences[0]) < len(lines[0]):
+        if len(best_sequences[0][0]) < len(lines[0]):
             return best_sequences
-        if len(best_sequences[0]) > len(lines[0]):
+        if len(best_sequences[0][0]) > len(lines[0]):
             best_sequences = []
 
     space = lines if verbose==False else tqdm.tqdm(lines)
@@ -88,6 +97,8 @@ if __name__ == "__main__":
         parser.add_argument('--find-IMT', type=int, default=0)
         parser.add_argument('--find-HRP', type=int, default=0)
         parser.add_argument('--find-TRP', type=int, default=0)
+        parser.add_argument('--min-size', type=int, default=0)
+
 
         args = parser.parse_args()
         executor = args.executor_path
@@ -96,11 +107,14 @@ if __name__ == "__main__":
         find_IMT = bool(args.find_IMT)
         find_HRP = bool(args.find_HRP)
         find_TRP = bool(args.find_TRP)
+        min_size = args.min_size
 
         if find_GQD == False and find_IMT == False and find_HRP == False and find_TRP == False:
             raise ValueError("Invalid configuration")
 
-        tmp_dirpath =  tempfile.mkdtemp()
+        tmp_dirpath = tempfile.mkdtemp()
+        print("tmpdir: {}".format(tmp_dirpath))
+
         next_grammar_path = "{}/next_grammar.txt".format(tmp_dirpath)
         config_path = "{}/config.json".format(tmp_dirpath)
         executor_result_path = "{}/next_result.txt".format(tmp_dirpath)
@@ -111,20 +125,20 @@ if __name__ == "__main__":
 
         gen = grammargenerator.GrammarGenerator()
         if find_HRP == False:
-            grammar = gen.create(find_GQD, find_IMT, find_TRP, find_HRP)
+            grammar = gen.create(find_GQD, find_IMT, find_TRP, find_HRP, min_size)
             lines = calculate_min_lines(next_grammar_path, config_path, tmp_dirpath, executor_result_path, executor)
             best_sequences = processLines(lines, best_sequences, [find_GQD, find_IMT, find_TRP, find_HRP], verbose=True)
         else:
             batch = []
             t1=time.time()
             progress = 0
-            for hrp in hrps:
+            for ind, hrp in enumerate(hrps):
                 progress += 1
                 batch.append(hrp)
-                if len(batch) < 5:
+                if len(batch) < 5 and ind < len(hrps) - 1:
                     continue
 
-                grammar = gen.create(find_GQD, find_IMT, find_TRP, find_HRP, hrps=batch)
+                grammar = gen.create(find_GQD, find_IMT, find_TRP, find_HRP, min_size, hrps=batch)
                 batch = []
 
                 lines = calculate_min_lines(next_grammar_path, config_path, tmp_dirpath, executor_result_path, executor)
@@ -139,6 +153,6 @@ if __name__ == "__main__":
                 f.write("{}: {}".format(line[0], str(line[1])))
                 f.write("\n")
 
-        shutil.rmtree(tmp_dirpath)
+        #shutil.rmtree(tmp_dirpath)
     except ValueError as e:
         print(e.message)
