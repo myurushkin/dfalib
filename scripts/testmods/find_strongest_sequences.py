@@ -97,7 +97,7 @@ if __name__ == "__main__":
         parser.add_argument('--find-IMT', type=int, default=0)
         parser.add_argument('--find-HRP', type=int, default=0)
         parser.add_argument('--find-TRP', type=int, default=0)
-        parser.add_argument('--min-size', type=int, default=0)
+        parser.add_argument('--length', type=int, default=0)
 
 
         args = parser.parse_args()
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         find_IMT = bool(args.find_IMT)
         find_HRP = bool(args.find_HRP)
         find_TRP = bool(args.find_TRP)
-        min_size = args.min_size
+        min_size = args.length
 
         if find_GQD == False and find_IMT == False and find_HRP == False and find_TRP == False:
             raise ValueError("Invalid configuration")
