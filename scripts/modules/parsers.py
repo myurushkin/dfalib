@@ -157,8 +157,8 @@ def analyze_string(string, find_params):
         result.append(max_hairpin_strength(string))
     else:
         result.append(-1)
-    if find_params[2] == True:
-        result.append(max_triplex_strength(string))
+    if find_params[2] > 0:
+        result.append(max_triplex_strength(string, find_params[2]))
     else:
         result.append(-1)
     return tuple(result)

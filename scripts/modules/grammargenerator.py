@@ -1,4 +1,5 @@
 import itertools
+from modules import helpers
 
 class GrammarGenerator:
     def __init__(self):
@@ -27,13 +28,24 @@ class GrammarGenerator:
                 result += "{} = {}\n".format(item[0], item[1])
             result += "\n"
             names.append("({})".format(" | ".join(x[0] for x in items3)))
-        if find_TRP == True:
-            items4 = self.generate_triplexes()
-            items4 = [("TRP_" + str(i+1), items4[i]) for i in range(len(items4))]
-            for item in items4:
+
+        if find_TRP > 0:
+            trps_list = helpers.get_triplex_set(find_TRP)
+            items = []
+            for index, x in enumerate(trps_list):
+                items.append(("TRP_" + str(index + 1), "X* {} X{{3}}X* {} X{{3}}X* {} X*".format(*x)))
+            for item in items:
                 result += "{} = {}\n".format(item[0], item[1])
             result += "\n"
-            names.append("({})".format(" | ".join(x[0] for x in items4)))
+            names.append("({})".format(" | ".join(x[0] for x in items)))
+
+        #if find_TRP == True:
+            # items4 = self.generate_triplexes()
+            # items4 = [("TRP_" + str(i+1), items4[i]) for i in range(len(items4))]
+            # for item in items4:
+            #     result += "{} = {}\n".format(item[0], item[1])
+            # result += "\n"
+            # names.append("({})".format(" | ".join(x[0] for x in items4)))
 
         if min_size > 0:
             names.append("LENGTH")
@@ -89,39 +101,40 @@ class GrammarGenerator:
             index += 1
         return result
 
-    def generate_triplexes(self):
-        # A.A-T
-        # A.T-A
-        # A.G-C
-        # A.C-G
-        # T.A-T
-        # T.T-A
-        # T.G-C
-        # T.C-G
-        # G.A-T
-        # G.T-A
-        # G.G-C
-        # G.C-G
-        # C.A-T
-        # C.T-A
-        # C.G-C
-        # C.C-G
-
-        patterns = ["aat", "ata", "agc", "acg", "tat", "tta", "tgc", "tcg",
-                    "gat", "gta", "ggc", "gcg", "cat", "cta", "cgc", "ccg"]
-
-        patterns_all = []
-        for item in patterns:
-            patterns_all.append(item[::-1])
-            patterns_all.extend(patterns)
-        patterns4_all = list(set(patterns_all))
-
-        result = []
-        index = 1
-        for item in patterns4_all:
-            ch1 = item[0]
-            ch2 = item[1]
-            ch3 = item[2]
-            result.append("X*  {}  X{{3}}X*  {}  X{{3}}X*  {}  X*".format(ch1, ch2, ch3))
-            index += 1
-        return result
+    # this set contains error (we decided to use two kinds of triplex sets)
+    # def generate_triplexes(self):
+    #     # A.A-T
+    #     # A.T-A
+    #     # A.G-C
+    #     # A.C-G
+    #     # T.A-T
+    #     # T.T-A
+    #     # T.G-C
+    #     # T.C-G
+    #     # G.A-T
+    #     # G.T-A
+    #     # G.G-C
+    #     # G.C-G
+    #     # C.A-T
+    #     # C.T-A
+    #     # C.G-C
+    #     # C.C-G
+    #
+    #     patterns = ["aat", "ata", "agc", "acg", "tat", "tta", "tgc", "tcg",
+    #                 "gat", "gta", "ggc", "gcg", "cat", "cta", "cgc", "ccg"]
+    #
+    #     patterns_all = []
+    #     for item in patterns:
+    #         patterns_all.append(item[::-1])
+    #         patterns_all.extend(patterns)
+    #     patterns4_all = list(set(patterns_all))
+    #
+    #     result = []
+    #     index = 1
+    #     for item in patterns4_all:
+    #         ch1 = item[0]
+    #         ch2 = item[1]
+    #         ch3 = item[2]
+    #         result.append("X*  {}  X{{3}}X*  {}  X{{3}}X*  {}  X*".format(ch1, ch2, ch3))
+    #         index += 1
+    #     return result
