@@ -32,3 +32,8 @@ Example2 : Find strongest srings of minimum length which contain GQD pattern onl
 ``` bash
 PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
 ```
+
+Example3 : Find strongest srings of length 17 which contain all patterns:
+``` bash
+PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 --find-IMT 1 --find-HRP 1 --find-TRP 1 --length 17  "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
+```
