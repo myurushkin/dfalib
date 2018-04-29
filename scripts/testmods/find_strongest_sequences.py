@@ -96,6 +96,7 @@ if __name__ == "__main__":
         parser.add_argument('--find-GQD', type=int, default=0)
         parser.add_argument('--find-IMT', type=int, default=0)
         parser.add_argument('--find-HRP', type=int, default=0)
+        # --find-TRP 0|1|2
         parser.add_argument('--find-TRP', type=int, default=0)
         parser.add_argument('--length', type=int, default=0)
 
@@ -106,10 +107,10 @@ if __name__ == "__main__":
         find_GQD = bool(args.find_GQD)
         find_IMT = bool(args.find_IMT)
         find_HRP = bool(args.find_HRP)
-        find_TRP = bool(args.find_TRP)
+        find_TRP = args.find_TRP
         min_size = args.length
 
-        if find_GQD == False and find_IMT == False and find_HRP == False and find_TRP == False:
+        if find_GQD == False and find_IMT == False and find_HRP == False and find_TRP == 0:
             raise ValueError("Invalid configuration")
 
         tmp_dirpath = tempfile.mkdtemp()
