@@ -89,29 +89,30 @@ def find_complimentary_position(string, position, left_border):
         except ValueError:
             return -1
 
-def is_triplex(string, first_position, second_position, third_position):
+def is_triplex(string, first_position, second_position, third_position, triplex_examples):
     if (third_position - second_position) < 4:
         return False
     if (second_position - first_position) < 4:
         return False
     if (first_position < second_position < third_position) == False:
         return False
-    if (first_position < 0)or(second_position < 0) or (third_position < 0):
+    if (first_position < 0) or(second_position < 0) or (third_position < 0):
         return False
     if (first_position > len(string) - 1)or(second_position > len(string) - 1) or (third_position > len(string) - 1):
         return False
-    if string[second_position] == 'a' and string[third_position] == 't':
+    new_triplex = string[first_position] + string[second_position] + string[third_position]
+    if triplex_examples == 1:
+        trps_set = {'tat', 'tta', 'ata', 'tcg', 'cta', 'agc', 'gcb', 'cgc', 'gat'}
+    else:
+        trps_set = {'tac', 'gta', 'tag', 'cta', 'cgg', 'cat', 'cga', 'gcc', 'gct'}
+    if new_triplex in trps_set:
         return True
-    if string[second_position] == 't' and string[third_position] == 'a':
-        return True
-    if string[second_position] == 'c' and string[third_position] == 'g':
-        return True
-    if string[second_position] == 'c' and string[third_position] == 'g':
-        return True
+
     return False
 
 
-def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos, first_triplex_third_pos):
+
+def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos, first_triplex_third_pos, triplex_examples):
     if (first_triplex_second_pos - first_triplex_first_pos) < 3:
         return 0
     max_strength = 0
@@ -120,14 +121,14 @@ def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos,
         another_triplex_first_position = first_triplex_first_pos + l
         another_triplex_second_position = first_triplex_second_pos - l
         another_triplex_third_positon = first_triplex_third_pos + l
-        if is_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon):
-            strength = 1 + find_next_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon)
+        if is_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon, triplex_examples):
+            strength = 1 + find_next_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon, triplex_examples)
         if strength > max_strength:
             max_strength = strength
 
     return max_strength
 
-def max_triplex_strength(string):
+def max_triplex_strength(string, triplex_examples):
     max_strength = 0
     for i in range(1, len(string) - 1):
         for j in range(i + 4, len(string) - 1):
@@ -137,7 +138,7 @@ def max_triplex_strength(string):
             for k in range(0, i):
                 strength = 1
                 first_triplex_position = k
-                strength = strength + find_next_triplex(string, first_triplex_position, i, complimentary_position)
+                strength = strength + find_next_triplex(string, first_triplex_position, i, complimentary_position, triplex_examples)
                 if strength > max_strength:
                     max_strength = strength
     return max_strength
