@@ -102,9 +102,9 @@ def is_triplex(string, first_position, second_position, third_position, triplex_
         return False
     new_triplex = string[first_position] + string[second_position] + string[third_position]
     if triplex_examples == 1:
-        trps_set = {'tat', 'tta', 'ata', 'tcg', 'cta', 'agc', 'gcb', 'cgc', 'gat'}
+        trps_set = {'tac', 'taa', 'tag', 'cgg', 'atg', 'cgt', 'cga', 'cgc', 'tat'}
     else:
-        trps_set = {'tac', 'gta', 'tag', 'cta', 'cgg', 'cat', 'cga', 'gcc', 'gct'}
+        trps_set = {'cat', 'agc', 'cgc', 'gat', 'ggc', 'tgc', 'tat', 'gta', 'aat'}
     if new_triplex in trps_set:
         return True
 
