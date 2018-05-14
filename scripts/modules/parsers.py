@@ -1,3 +1,5 @@
+import helpers
+
 
 def hairpin_strength(hairpin, tail_left):
     strength = 0
@@ -101,13 +103,9 @@ def is_triplex(string, first_position, second_position, third_position, triplex_
     if (first_position > len(string) - 1)or(second_position > len(string) - 1) or (third_position > len(string) - 1):
         return False
     new_triplex = string[first_position] + string[second_position] + string[third_position]
-    if triplex_examples == 1:
-        trps_set = {'tac', 'taa', 'tag', 'cgg', 'atg', 'cgt', 'cga', 'cgc', 'tat'}
-    else:
-        trps_set = {'cat', 'agc', 'cgc', 'gat', 'ggc', 'tgc', 'tat', 'gta', 'aat'}
+    trps_set = set(helpers.get_triplex_set(triplex_examples))
     if new_triplex in trps_set:
         return True
-
     return False
 
 
