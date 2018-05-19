@@ -1,4 +1,4 @@
-import helpers
+from modules import helpers
 
 
 def hairpin_strength(hairpin, tail_left):
@@ -111,7 +111,7 @@ def is_triplex(string, first_position, second_position, third_position, triplex_
 
 
 def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos, first_triplex_third_pos, triplex_examples):
-    if (first_triplex_second_pos - first_triplex_first_pos) < 3:
+    if (first_triplex_second_pos - first_triplex_first_pos) < 4:
         return 0
     max_strength = 0
     strength = 0
@@ -128,17 +128,18 @@ def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos,
 
 def max_triplex_strength(string, triplex_examples):
     max_strength = 0
-    for i in range(1, len(string) - 1):
-        for j in range(i + 4, len(string) - 1):
-            complimentary_position = find_complimentary_position(string, i, j)
-            if complimentary_position == -1:
-                continue
-            for k in range(0, i):
-                strength = 1
-                first_triplex_position = k
-                strength = strength + find_next_triplex(string, first_triplex_position, i, complimentary_position, triplex_examples)
-                if strength > max_strength:
-                    max_strength = strength
+    for i in range(len(string)):
+        for j in range(len(string)):
+            for k in range(len(string)):
+                triplex_candidate = sorted([i, j, k])
+                if is_triplex(string, triplex_candidate[0], triplex_candidate[1], triplex_candidate[2], triplex_examples):
+                    strength = 1
+                    strength += find_next_triplex(string, triplex_candidate[0], triplex_candidate[1],
+                                                  triplex_candidate[2], triplex_examples)
+                    if strength > max_strength:
+                        max_strength = strength
+                else:
+                    continue
     return max_strength
 
 
