@@ -21,7 +21,7 @@ cmake ../dfalib
 make
 ```
 
-## execute python script:
+## Example of usage python script:
 
 Example: Find strongest srings of minimum length which contain all patterns:
 ``` bash
