@@ -21,14 +21,14 @@ cmake ../dfalib
 make
 ```
 
-## Example of usage python script:
+## Example of usage:
 
-Example: Find strongest srings of minimum length which contain all patterns:
+Search of the strongest strings of minimum length which contain all patterns:
 ``` bash
 PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 --find-IMT 1 --find-HRP 1 --find-TRP 1  "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
 ```
 
-Example of output:
+Output:
 ```
 aaaataaag: (-1, -1, -1, 1)
 agaataaag: (-1, -1, -1, 1)
@@ -50,6 +50,17 @@ aaaatcaag: (-1, -1, -1, 1)
 agaatcaag: (-1, -1, -1, 1)
 aagatcaag: (-1, -1, -1, 1)
 ```
+
+Output represents list of the strongest sequences of minimum size which correspond to search requirements.
+The stength of sequence is vector of values. 
+
+## Strength vector description
+
+Stength vector of sequence has the following format 
+```(a, b, c, d)```
+
+where a, b, c, d correspond to a number of GQD, IMT, HRP, TRP patterns found in the sequence.
+If particular attribute is equal to -1 it means that it was not specified in search parameters and is out of interest.
 
 ## Arguments description:
 * --find-GQD <0 or 1>. The argument enables search of sequences with GQD pattern. Default value is 0. 
