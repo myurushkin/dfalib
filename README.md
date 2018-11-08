@@ -51,7 +51,7 @@ agaatcaag: (-1, -1, -1, 1)
 aagatcaag: (-1, -1, -1, 1)
 ```
 
-Arguments description:
+## Arguments description:
 * --find-GQD <0 or 1>. The argument enables search of sequences with GQD pattern. Default value is 0. 
 * --find-IMT <0 or 1>. The argument enables search of sequences with IMT pattern. Default value is 0.
 * --find-HRP <0 or 1>. The argument search of sequences with HRP pattern. Default value is 0.
