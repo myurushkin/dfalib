@@ -62,6 +62,11 @@ Stength vector of sequence has the following format
 where a, b, c, d correspond to a number of GQD, IMT, HRP, TRP patterns found in the sequence.
 If particular attribute is equal to -1 it means that it was not specified in search parameters and is out of interest.
 
+In the output presented all sequences (19 in total) which are the smallest and contain at least one triplex. The size is 9 and all of them have only 1 triplex. Extra facts which are proved automatically:
+
+1) There're no sequences of size lesser then 9 which have at least 1 triplex.
+2) There're no suquences of size 9 which have more then 1 triplex.
+
 ## Arguments description:
 * --find-GQD <0 or 1>. The argument enables search of sequences with GQD pattern. Default value is 0. 
 * --find-IMT <0 or 1>. The argument enables search of sequences with IMT pattern. Default value is 0.
