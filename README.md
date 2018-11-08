@@ -23,17 +23,37 @@ make
 
 ## execute python script:
 
-Example1 : Find strongest srings of minimum length which contain all patterns:
+Example: Find strongest srings of minimum length which contain all patterns:
 ``` bash
 PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 --find-IMT 1 --find-HRP 1 --find-TRP 1  "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
 ```
 
-Example2 : Find strongest srings of minimum length which contain GQD pattern only:
-``` bash
-PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
+Example of output:
+```
+aaaataaag: (-1, -1, -1, 1)
+agaataaag: (-1, -1, -1, 1)
+aagataaag: (-1, -1, -1, 1)
+aggataaag: (-1, -1, -1, 1)
+aaagtaaag: (-1, -1, -1, 1)
+agagtaaag: (-1, -1, -1, 1)
+aaggtaaag: (-1, -1, -1, 1)
+agggtaaag: (-1, -1, -1, 1)
+aaaatgaag: (-1, -1, -1, 1)
+agaatgaag: (-1, -1, -1, 1)
+aagatgaag: (-1, -1, -1, 1)
+aggatgaag: (-1, -1, -1, 1)
+aaagtgaag: (-1, -1, -1, 1)
+agagtgaag: (-1, -1, -1, 1)
+aaggtgaag: (-1, -1, -1, 1)
+agggtgaag: (-1, -1, -1, 1)
+aaaatcaag: (-1, -1, -1, 1)
+agaatcaag: (-1, -1, -1, 1)
+aagatcaag: (-1, -1, -1, 1)
 ```
 
-Example3 : Find strongest srings of length 17 which contain all patterns:
-``` bash
-PYTHONPATH="${PROJECTS_DIR}/dfalib/scripts" python "${PROJECTS_DIR}/dfalib/scripts/testmods/find_strongest_sequences.py" --find-GQD 1 --find-IMT 1 --find-HRP 1 --find-TRP 1 --length 17  "${PROJECTS_DIR}/build/dfalibproj/sources/testmod/testmod" ./output.txt
-```
+Arguments description:
+* --find-GQD <0 or 1>. The argument enables search of sequences with GQD pattern. Default value is 0. 
+* --find-IMT <0 or 1>. The argument enables search of sequences with IMT pattern. Default value is 0.
+* --find-HRP <0 or 1>. The argument search of sequences with HRP pattern. Default value is 0.
+* --find-TRP <0 or 1>. The argument search of sequences with TRP pattern. Default value is 0.
+* --length <positive number>. Default value is 1. Minimal size of sequence. 
