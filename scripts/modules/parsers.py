@@ -31,6 +31,34 @@ def max_hairpin_strength(string):
     return cw
 
 
+def max_gquadruplex_strength2(string):
+    min_g_count = 8
+    g_count = 0
+    for s in string:
+        if s == 'g':
+            g_count += 1
+    if g_count < min_g_count:
+        return 0
+    groups_count = 4
+    max_strength = 0
+    while True:
+        new_strength = max_strength + 1
+        finded_groups = 0
+        current_count_in_group = 0
+        i = 0
+        while i < len(string):
+            if string[i] == 'g':
+                current_count_in_group += 1
+                if current_count_in_group == new_strength:
+                    current_count_in_group = 0
+                    finded_groups += 1
+                    i += 1
+            i += 1
+        if finded_groups < groups_count:
+           return max_strength
+        max_strength = new_strength
+
+
 def traverse_gquadruplex(string, ch, last_pos, last_group_id, groups):
     MinSBetweenGroups = 3
     new_pos = string.find(ch, last_pos + 1)
