@@ -1,5 +1,4 @@
 from modules import helpers
-import numpy as np
 
 
 def hairpin_strength(hairpin, tail_left):
@@ -32,44 +31,32 @@ def max_hairpin_strength(string):
     return cw
 
 
-def traverse_gquadruplex(string, ch, last_pos, last_group_id, groups):
-    MinSBetweenGroups = 3
-    new_pos = string.find(ch, last_pos + 1)
-    if new_pos < 0:
-        count = {}
-        count[0] = count[1] = count[2] = count[3] = 0
-        for gr in groups:
-            count[gr[1]] += 1
-        return min(count[0], count[1], count[2], count[3])
-
-    result1 = traverse_gquadruplex(string, ch, new_pos, last_group_id, groups)
-
-
-    current_group_id = last_group_id
-    groups.append((new_pos, current_group_id))
-    result2 = traverse_gquadruplex(string, ch, new_pos, current_group_id, groups)
-    del groups[-1]
-    if result2 > result1:
-        result1 = result2
-
-    if last_group_id < 3 and new_pos - groups[-1][0] > MinSBetweenGroups:
-        current_group_id = last_group_id + 1
-        groups.append((new_pos, current_group_id))
-        result2 = traverse_gquadruplex(string, ch, new_pos, current_group_id, groups)
-        del groups[-1]
-        if result2 > result1:
-            result1 = result2
-    return result1
-
-def max_gquadruplex_strength(string, ch):
-    currentPos = string.find(ch)
-    if currentPos < 0:
-        return -1
-
-    last_group_id = 0
-    groups = [(currentPos, last_group_id)]
-    return traverse_gquadruplex(string, ch, currentPos, last_group_id, groups)
-
+def max_gquadruplex_strength(string):
+    min_g_count = 8
+    g_count = 0
+    for s in string:
+        if s == 'g':
+            g_count += 1
+    if g_count < min_g_count:
+        return 0
+    groups_count = 4
+    max_strength = 0
+    while True:
+        new_strength = max_strength + 1
+        finded_groups = 0
+        current_count_in_group = 0
+        i = 0
+        while i < len(string):
+            if string[i] == 'g':
+                current_count_in_group += 1
+                if current_count_in_group == new_strength:
+                    current_count_in_group = 0
+                    finded_groups += 1
+                    i += 1
+            i += 1
+        if finded_groups < groups_count:
+           return max_strength
+        max_strength = new_strength
 
 
 def max_imotiv_stength(input_string):
@@ -187,12 +174,11 @@ def max_triplex_strength(string, triplex_examples):
 def analyze_string(string, find_params):
     result = []
     if find_params[0] == True:
-        result.append(max_gquadruplex_strength(string, "g"))
+        result.append(max_gquadruplex_strength(string))
     else:
         result.append(-1)
     if find_params[1] == True:
         result.append(max_imotiv_stength(string))
-        # result.append(max_gquadruplex_strength(string, "c"))
     else:
         result.append(-1)
     if find_params[3] == True:
