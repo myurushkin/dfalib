@@ -1,5 +1,5 @@
 import argparse
-import itertools
+import itertools, tqdm
 from modules import parsers
 
 def create_table(kParam, resultStringSize):
@@ -8,7 +8,7 @@ def create_table(kParam, resultStringSize):
     result = []
     excludedStrings = set()
     counter = 0
-    for patternSize in range(1, kParam+1):
+    for patternSize in tqdm.trange(1, kParam+1):
         assert resultStringSize % patternSize == 0
         for patternString in itertools.product(*(['acgt'] * patternSize)):
             fullString = "".join(patternString) * (resultStringSize // patternSize)
@@ -28,8 +28,8 @@ def create_table(kParam, resultStringSize):
 
     find_GQD = False
     find_IMT = False
-    find_TRP = True
-    find_HRP = True
+    find_TRP = False
+    find_HRP = False
 
     result_lines = []
     for pattern, fullString in result:
@@ -41,18 +41,16 @@ def create_table(kParam, resultStringSize):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Finds TR (Tandem Repeats)')
     parser.add_argument('output_path', type=str)
-    # parser.add_argument('--find-GQD', type=int, default=0)
-    # parser.add_argument('--find-IMT', type=int, default=0)
-    # parser.add_argument('--find-HRP', type=int, default=0)
-    # parser.add_argument('--find-TRP', type=int, default=0)
-    parser.add_argument('--k', type=int, default=1)
+    parser.add_argument('--k', type=int, default=6)
+    parser.add_argument('--result-string-size', type=int, default=60)
+
 
     args = parser.parse_args()
     output_path = args.output_path
+    resultStringSize = args.result_string_size
 
     with open(output_path, "w") as f:
-        f.write(",".join(["{}"]*7).format("k", "pattern", "string", "GQD", "IMT", "TRP", "HRP") + "\n")
         for k in range(1, args.k+1):
-            result_lines = create_table(kParam=k, resultStringSize=12)
+            result_lines = create_table(kParam=k, resultStringSize=resultStringSize)
             for line in result_lines:
-                f.write(",".join(["{}"]*7).format(*line) + "\n")
+                f.write("{},{},{}\n".format(line[2], line[0], line[1]))

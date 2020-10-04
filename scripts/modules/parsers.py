@@ -102,14 +102,11 @@ def max_imotiv_stength(input_string):
                 if min([left_group_size, second_group_size, third_group_size, last_group_size]) == 0:
                     continue
                 direct = min(left_group_size, third_group_size) + min(second_group_size, last_group_size)
-                inverse = min(left_group_size, last_group_size) + min(third_group_size, last_group_size)
+                inverse = min(left_group_size, last_group_size) + min(second_group_size, third_group_size)
                 result = max([result, direct, inverse])
     return result
 
 
-test_strings = ["cgcgcgcg", "cgcabcgcg", "ccgcabcgccg", "ccgcabccgcg", "ccgcabcaacgcg"]
-for s in test_strings:
-    print("{}: {}".format(s, max_imotiv_stength(s)))
 
 
 
@@ -210,3 +207,9 @@ def analyze_string(string, find_params):
 
 # find_GQD, find_IMT, find_TRP, find_HRP
 
+
+
+if __name__ == "__main__":
+    test_strings = ["ccccccccccccc", "cgcgcgcg", "cgcabcgcg", "ccgcabcgccg", "ccgcabccgcg", "ccgcabcaacgcg"]
+    for s in test_strings:
+        print("{}: {}".format(s, max_imotiv_stength(s)))
