@@ -14,3 +14,8 @@ def generate_random_string(min_size, max_size):
     map_array = ['a', 't', 'g', 'c']
     arr = np.random.randint(4, size=size)
     return ''.join(list(map(lambda x: map_array[x], arr)))
+
+
+def generate_random_strings(min_size, max_size, count):
+    for i in range(count):
+        yield generate_random_string(min_size, max_size)
