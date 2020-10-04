@@ -1,4 +1,5 @@
 from modules import helpers
+import numpy as np
 
 
 def hairpin_strength(hairpin, tail_left):
@@ -68,6 +69,49 @@ def max_gquadruplex_strength(string, ch):
     last_group_id = 0
     groups = [(currentPos, last_group_id)]
     return traverse_gquadruplex(string, ch, currentPos, last_group_id, groups)
+
+
+
+def max_imotiv_stength(input_string):
+    # first_group = [0.. cursor_left)
+    # second_group = [cursor_left+1, cursor_central)
+    # third_group = [cursor_central+2, cursor_right)
+    # last_group = [cursor_right+1, len(string))
+    result = 0
+
+    counts = np.zeros(len(input_string) + 1, dtype=np.int)
+    for i, c in enumerate(input_string):
+        counts[i + 1] = counts[i]
+        if c == 'c':
+            counts[i+1] += 1
+
+
+    def cnt(begin, end):
+        if begin >= end:
+            return 0
+        return counts[end] - counts[begin]
+
+    for cursor_central in range(len(input_string)):
+        for cursor_left in range(cursor_central):
+            for cursor_right in range(cursor_central, len(input_string)):
+                left_group_size = cnt(0, cursor_left)
+                second_group_size = cnt(cursor_left+1, cursor_central)
+                third_group_size = cnt(cursor_central+2, cursor_right)
+                last_group_size = cnt(cursor_right+1, len(input_string))
+
+                if min([left_group_size, second_group_size, third_group_size, last_group_size]) == 0:
+                    continue
+                direct = min(left_group_size, third_group_size) + min(second_group_size, last_group_size)
+                inverse = min(left_group_size, last_group_size) + min(third_group_size, last_group_size)
+                result = max([result, direct, inverse])
+    return result
+
+
+test_strings = ["cgcgcgcg", "cgcabcgcg", "ccgcabcgccg", "ccgcabccgcg", "ccgcabcaacgcg"]
+for s in test_strings:
+    print("{}: {}".format(s, max_imotiv_stength(s)))
+
+
 
 def find_complimentary_position(string, position, left_border):
     if string[position] == 'a':
@@ -150,7 +194,8 @@ def analyze_string(string, find_params):
     else:
         result.append(-1)
     if find_params[1] == True:
-        result.append(max_gquadruplex_strength(string, "c"))
+        result.append(max_imotiv_stength(string))
+        # result.append(max_gquadruplex_strength(string, "c"))
     else:
         result.append(-1)
     if find_params[3] == True:
@@ -164,3 +209,4 @@ def analyze_string(string, find_params):
     return tuple(result)
 
 # find_GQD, find_IMT, find_TRP, find_HRP
+
