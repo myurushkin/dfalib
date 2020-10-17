@@ -2,31 +2,41 @@ from modules import helpers
 
 
 def hairpin_strength(hairpin, tail_left):
-    head_size = 3
-    strength = 0
-    tail_center_right = tail_left + head_size + 1
-    tail_size = min(tail_left + 1, len(hairpin) - tail_center_right)
+    max_strength = 0
+    max_head_size = 0
+    for j in range(3, len(hairpin) - tail_left):
+        head_size = j
+        strength = 0
+        tail_center_right = tail_left + head_size + 1
+        tail_size = min(tail_left + 1, len(hairpin) - tail_center_right)
 
-    for i in range(tail_size):
-        if hairpin[tail_left - i] == 'a' and hairpin[tail_center_right + i] == 't':
-            strength += 1
-        elif hairpin[tail_left - i] == 't' and hairpin[tail_center_right + i] == 'a':
-            strength += 1
-        elif hairpin[tail_left - i] == 'c' and hairpin[tail_center_right + i] == 'g':
-            strength += 1
-        elif hairpin[tail_left - i] == 'g' and hairpin[tail_center_right + i] == 'c':
-            strength += 1
-        # else:
-        # return strength
-    return strength
+        for i in range(tail_size):
+            if hairpin[tail_left - i] == 'a' and hairpin[tail_center_right + i] == 't':
+                strength += 1
+            elif hairpin[tail_left - i] == 't' and hairpin[tail_center_right + i] == 'a':
+                strength += 1
+            elif hairpin[tail_left - i] == 'c' and hairpin[tail_center_right + i] == 'g':
+                strength += 1
+            elif hairpin[tail_left - i] == 'g' and hairpin[tail_center_right + i] == 'c':
+                strength += 1
+        if strength > max_strength:
+            max_strength = strength
+            max_head_size = head_size
+    return max_strength, max_head_size
 
 
 def max_hairpin_strength(string):
     cw = 0
+    max_i = 0
+    max_head_size = 0
     for i in range(len(string)):
-        cw_new = hairpin_strength(string, i)
+        cw_new, new_head_size = hairpin_strength(string, i)
         if cw_new > cw:
+            max_head_size = new_head_size
+            max_i = i
             cw = cw_new
+#    print("head_start: {}".format(max_i + 1))
+#    print("head_size: {}".format(max_head_size))
     return cw
 
 
