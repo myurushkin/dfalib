@@ -2,8 +2,9 @@ from modules import helpers
 
 
 def hairpin_strength(hairpin, tail_left):
+    head_size = 3
     strength = 0
-    tail_center_right = tail_left + 5
+    tail_center_right = tail_left + head_size + 1
     tail_size = min(tail_left + 1, len(hairpin) - tail_center_right)
 
     for i in range(tail_size):
@@ -15,19 +16,17 @@ def hairpin_strength(hairpin, tail_left):
             strength += 1
         elif hairpin[tail_left - i] == 'g' and hairpin[tail_center_right + i] == 'c':
             strength += 1
-        else:
-            return strength
+        # else:
+        # return strength
     return strength
 
 
 def max_hairpin_strength(string):
     cw = 0
-    tail_index = 0
     for i in range(len(string)):
         cw_new = hairpin_strength(string, i)
         if cw_new > cw:
             cw = cw_new
-            tail_index = i
     return cw
 
 
