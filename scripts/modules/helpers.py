@@ -19,3 +19,20 @@ def generate_random_string(min_size, max_size):
 def generate_random_strings(min_size, max_size, count):
     for i in range(count):
         yield generate_random_string(min_size, max_size)
+
+
+def is_complimentary_strings(left_string, right_string, reverse_complimentary=False):
+    if len(left_string) != len(right_string):
+        return False
+    for i in range(len(left_string)):
+        left_letter = left_string[i]
+        right_letter = right_string[i] if not reverse_complimentary else right_string[-i-1]
+        if left_letter == 'a' and right_letter != 't':
+            return False
+        if left_letter == 't' and right_letter != 'a':
+            return False
+        if left_letter == 'g' and right_letter != 'c':
+            return False
+        if left_letter == 'c' and right_letter != 'g':
+            return False
+    return True

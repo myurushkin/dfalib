@@ -180,6 +180,39 @@ def max_triplex_strength(string, triplex_examples):
     return max_strength
 
 
+def max_triplex_strength2(string):
+    max_triplex_strength = 0
+    ag_set = {'a', 'g'}
+    for i in range(len(string)):
+        for j in range(i+1, len(string)):
+            candidate = string[i:j]
+            if set(candidate) != ag_set:
+                continue
+            candidate_len = len(candidate)
+            for x in range(3, len(string)):
+                for y in range(3, len(string)):
+                    # center case:
+                    left_end = i - x
+                    left_start = i - x - candidate_len
+                    right_start = i + candidate_len + y
+                    right_end = i + 2*candidate_len + y
+
+                    #left_case:
+                    center_start = i + candidate_len + x
+                    center_end = i + 2*candidate_len + x
+                    right_start = center_end + y
+                    right_end = center_end + y + candidate_len
+
+                    #right_case:
+                    center_start = i - candidate_len - x
+                    center_end = center_start + candidate_len
+                    left_start = center_start - y - candidate_len
+                    left_end = left_start + candidate_len
+
+
+
+
+
 def analyze_string(string, find_params):
     result = []
     if find_params[0] == True:
