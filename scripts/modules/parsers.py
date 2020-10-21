@@ -122,6 +122,15 @@ def is_triplex(left_part, center_part, right_part, case):
         if helpers.is_complimentary_strings(center_part, left_part, reverse_complimentary=True) \
                 and helpers.is_weak_complimentary_strings(center_part, right_part, reverse_complimentary=True):
             return True
+    if case == "right":
+        #yry
+        if helpers.is_complimentary_strings(right_part, center_part, reverse_complimentary=True) \
+                and helpers.is_complimentary_strings(right_part, left_part):
+            return True
+        #yrr
+        if helpers.is_complimentary_strings(right_part, center_part, reverse_complimentary=True) \
+                and helpers.is_weak_complimentary_strings(right_part, left_part):
+            return True
     return False
 
 
@@ -175,6 +184,20 @@ def max_triplex_strength(string):
                         max_strength = max(max_strength, candidate_len)
                         continue
                     if is_triplex(right_part[::-1], center_part[::-1], left_part[::-1], "left"):
+                        max_strength = max(max_strength, candidate_len)
+                        continue
+                    #right case
+                    center_start = i - candidate_len - x
+                    center_end = center_start + candidate_len
+                    left_start = center_start - y - candidate_len
+                    left_end = left_start + candidate_len
+                    center_part = cash_dict[center_start][center_end]
+                    left_part = cash_dict[left_start][left_end]
+                    right_part = candidate
+                    if is_triplex(left_part, center_part, right_part, "right"):
+                        max_strength = max(max_strength, candidate_len)
+                        continue
+                    if is_triplex(right_part[::-1], center_part[::-1], left_part[::-1], "right"):
                         max_strength = max(max_strength, candidate_len)
                         continue
     return max_strength
