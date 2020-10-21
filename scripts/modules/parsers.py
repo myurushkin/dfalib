@@ -1,5 +1,5 @@
 from modules import helpers
-
+from collections import defaultdict
 
 def hairpin_strength(hairpin, tail_left):
     max_strength = 0
@@ -103,91 +103,32 @@ def max_imotiv_stength(input_string):
     return result
 
 
-
-
-
-def find_complimentary_position(string, position, left_border):
-    if string[position] == 'a':
-        try:
-            return string.index('t', left_border)
-        except ValueError:
-            return -1
-    if string[position] == 't':
-        try:
-            return string.index('a', left_border)
-        except ValueError:
-            return -1
-    if string[position] == 'c':
-        try:
-            return string.index('g', left_border)
-        except ValueError:
-            return -1
-    if string[position] == 'g':
-        try:
-            return string.index('c', left_border)
-        except ValueError:
-            return -1
-
-def is_triplex(string, first_position, second_position, third_position, triplex_examples):
-    if (third_position - second_position) < 4:
-        return False
-    if (second_position - first_position) < 4:
-        return False
-    if (first_position < second_position < third_position) == False:
-        return False
-    if (first_position < 0) or(second_position < 0) or (third_position < 0):
-        return False
-    if (first_position > len(string) - 1)or(second_position > len(string) - 1) or (third_position > len(string) - 1):
-        return False
-    new_triplex = string[first_position] + string[second_position] + string[third_position]
-    trps_set = set(helpers.get_triplex_set(triplex_examples))
-    if new_triplex in trps_set:
+def is_triplex(left_part, center_part, right_part):
+    if helpers.is_complimentary_strings(left_part, center_part) \
+            and helpers.is_complimentary_strings(left_part, right_part, reverse_complimentary=True):
         return True
+
     return False
-
-
-
-def find_next_triplex(string, first_triplex_first_pos, first_triplex_second_pos, first_triplex_third_pos, triplex_examples):
-    if (first_triplex_second_pos - first_triplex_first_pos) < 4:
-        return 0
-    max_strength = 0
-    strength = 0
-    for l in range(1, first_triplex_second_pos - first_triplex_first_pos):
-        another_triplex_first_position = first_triplex_first_pos + l
-        another_triplex_second_position = first_triplex_second_pos - l
-        another_triplex_third_positon = first_triplex_third_pos + l
-        if is_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon, triplex_examples):
-            strength = 1 + find_next_triplex(string, another_triplex_first_position, another_triplex_second_position, another_triplex_third_positon, triplex_examples)
-        if strength > max_strength:
-            max_strength = strength
-
-    return max_strength
-
-def max_triplex_strength(string, triplex_examples):
-    max_strength = 0
-    for i in range(len(string)):
-        for j in range(len(string)):
-            for k in range(len(string)):
-                triplex_candidate = sorted([i, j, k])
-                if is_triplex(string, triplex_candidate[0], triplex_candidate[1], triplex_candidate[2], triplex_examples):
-                    strength = 1
-                    strength += find_next_triplex(string, triplex_candidate[0], triplex_candidate[1],
-                                                  triplex_candidate[2], triplex_examples)
-                    if strength > max_strength:
-                        max_strength = strength
-                else:
-                    continue
-    return max_strength
 
 
 def max_triplex_strength2(string):
     max_triplex_strength = 0
     ag_set = {'a', 'g'}
+    a_set = {'a'}
+    g_set = {'g'}
+
+    cash_dict = defaultdict(lambda: defaultdict(str))
+    for i in range(len(string)):
+        for j in range(i + 1, len(string)):
+            cash_dict[i][j] = string[i:j]
+
     for i in range(len(string)):
         for j in range(i+1, len(string)):
-            candidate = string[i:j]
-            if set(candidate) != ag_set:
+            candidate = cash_dict[i][j]
+            set_candidate = set(candidate)
+            if set_candidate != ag_set and set_candidate != a_set and set_candidate != g_set:
                 continue
+
             candidate_len = len(candidate)
             for x in range(3, len(string)):
                 for y in range(3, len(string)):
@@ -197,17 +138,21 @@ def max_triplex_strength2(string):
                     right_start = i + candidate_len + y
                     right_end = i + 2*candidate_len + y
 
+                    left_part = cash_dict[left_start][left_end]
+                    right_part = cash_dict[right_start][right_end]
+                    center_part = candidate
+                    if is_triplex(left_part, center_part, right_part):
+                        continue
+                    if is_triplex(reversed(right_part), reversed(center_part), reversed(left_part)):
+                        continue
                     #left_case:
                     center_start = i + candidate_len + x
                     center_end = i + 2*candidate_len + x
                     right_start = center_end + y
                     right_end = center_end + y + candidate_len
-
-                    #right_case:
-                    center_start = i - candidate_len - x
-                    center_end = center_start + candidate_len
-                    left_start = center_start - y - candidate_len
-                    left_end = left_start + candidate_len
+                    left_part = candidate
+                    center_part = cash_dict[center_start][center_end]
+                    right_part = cash_dict[right_start][right_end]
 
 
 
