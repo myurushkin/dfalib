@@ -115,11 +115,11 @@ def is_triplex(left_part, center_part, right_part, case):
             return True
     if case == "center":
         #yry
-        if helpers.is_complimentary_strings(left_part, center_part, reverse_complimentary=True) \
+        if helpers.is_complimentary_strings(center_part, left_part, reverse_complimentary=True) \
                 and helpers.is_complimentary_strings(center_part, right_part, reverse_complimentary=True):
             return True
         #yrr
-        if helpers.is_complimentary_strings(left_part, center_part, reverse_complimentary=True) \
+        if helpers.is_complimentary_strings(center_part, left_part, reverse_complimentary=True) \
                 and helpers.is_weak_complimentary_strings(center_part, right_part, reverse_complimentary=True):
             return True
     return False

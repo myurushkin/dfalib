@@ -21,12 +21,12 @@ def generate_random_strings(min_size, max_size, count):
         yield generate_random_string(min_size, max_size)
 
 
-def is_complimentary_strings(left_string, right_string, reverse_complimentary=False):
-    if len(left_string) != len(right_string):
+def is_complimentary_strings(ga_string, other_string, reverse_complimentary=False):
+    if len(ga_string) != len(other_string):
         return False
-    for i in range(len(left_string)):
-        left_letter = left_string[i]
-        right_letter = right_string[i] if not reverse_complimentary else right_string[-i-1]
+    for i in range(len(ga_string)):
+        left_letter = ga_string[i]
+        right_letter = other_string[i] if not reverse_complimentary else other_string[-i - 1]
         if left_letter == 'a' and right_letter != 't':
             return False
         if left_letter == 't' and right_letter != 'a':
@@ -38,12 +38,12 @@ def is_complimentary_strings(left_string, right_string, reverse_complimentary=Fa
     return True
 
 
-def is_weak_complimentary_strings(left_string, right_string, reverse_complimentary=False):
-    if len(left_string) != len(right_string):
+def is_weak_complimentary_strings(ga_string, other_string, reverse_complimentary=False):
+    if len(ga_string) != len(other_string):
         return False
-    for i in range(len(left_string)):
-        left_letter = left_string[i]
-        right_letter = right_string[i] if not reverse_complimentary else right_string[-i-1]
+    for i in range(len(ga_string)):
+        left_letter = ga_string[i]
+        right_letter = other_string[i] if not reverse_complimentary else other_string[-i - 1]
         if left_letter == 'a' and right_letter != 't' and right_letter != 'a':
             return False
         if left_letter == 'g' and right_letter != 'g' and right_letter != 'a':
