@@ -103,16 +103,30 @@ def max_imotiv_stength(input_string):
     return result
 
 
-def is_triplex(left_part, center_part, right_part):
-    if helpers.is_complimentary_strings(left_part, center_part) \
-            and helpers.is_complimentary_strings(left_part, right_part, reverse_complimentary=True):
-        return True
-
+def is_triplex(left_part, center_part, right_part, case):
+    if case == "left":
+        #yry
+        if helpers.is_complimentary_strings(left_part, center_part) \
+                and helpers.is_complimentary_strings(left_part, right_part, reverse_complimentary=True):
+            return True
+        #yrr
+        if helpers.is_complimentary_strings(left_part, center_part) \
+                and helpers.is_weak_complimentary_strings(left_part, right_part):
+            return True
+    if case == "center":
+        #yry
+        if helpers.is_complimentary_strings(left_part, center_part, reverse_complimentary=True) \
+                and helpers.is_complimentary_strings(center_part, right_part, reverse_complimentary=True):
+            return True
+        #yrr
+        if helpers.is_complimentary_strings(left_part, center_part, reverse_complimentary=True) \
+                and helpers.is_weak_complimentary_strings(center_part, right_part, reverse_complimentary=True):
+            return True
     return False
 
 
-def max_triplex_strength2(string):
-    max_triplex_strength = 0
+def max_triplex_strength(string):
+    max_strength = 0
     ag_set = {'a', 'g'}
     a_set = {'a'}
     g_set = {'g'}
@@ -133,6 +147,7 @@ def max_triplex_strength2(string):
             for x in range(3, len(string)):
                 for y in range(3, len(string)):
                     # center case:
+
                     left_end = i - x
                     left_start = i - x - candidate_len
                     right_start = i + candidate_len + y
@@ -141,10 +156,13 @@ def max_triplex_strength2(string):
                     left_part = cash_dict[left_start][left_end]
                     right_part = cash_dict[right_start][right_end]
                     center_part = candidate
-                    if is_triplex(left_part, center_part, right_part):
+                    if is_triplex(left_part, center_part, right_part, "center"):
+                        max_strength = max(max_strength, candidate_len)
                         continue
-                    if is_triplex(reversed(right_part), reversed(center_part), reversed(left_part)):
+                    if is_triplex(right_part[::-1], center_part[::-1], left_part[::-1], "center"):
+                        max_strength = max(max_strength, candidate_len)
                         continue
+
                     #left_case:
                     center_start = i + candidate_len + x
                     center_end = i + 2*candidate_len + x
@@ -153,7 +171,13 @@ def max_triplex_strength2(string):
                     left_part = candidate
                     center_part = cash_dict[center_start][center_end]
                     right_part = cash_dict[right_start][right_end]
-
+                    if is_triplex(left_part, center_part, right_part, "left"):
+                        max_strength = max(max_strength, candidate_len)
+                        continue
+                    if is_triplex(right_part[::-1], center_part[::-1], left_part[::-1], "left"):
+                        max_strength = max(max_strength, candidate_len)
+                        continue
+    return max_strength
 
 
 

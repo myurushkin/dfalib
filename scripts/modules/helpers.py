@@ -36,3 +36,20 @@ def is_complimentary_strings(left_string, right_string, reverse_complimentary=Fa
         if left_letter == 'c' and right_letter != 'g':
             return False
     return True
+
+
+def is_weak_complimentary_strings(left_string, right_string, reverse_complimentary=False):
+    if len(left_string) != len(right_string):
+        return False
+    for i in range(len(left_string)):
+        left_letter = left_string[i]
+        right_letter = right_string[i] if not reverse_complimentary else right_string[-i-1]
+        if left_letter == 'a' and right_letter != 't' and right_letter != 'a':
+            return False
+        if left_letter == 'g' and right_letter != 'g' and right_letter != 'a':
+            return False
+        if left_letter == 'c' or right_letter == 'c':
+            return False
+        if left_letter == 't':
+            return False
+    return True
