@@ -197,7 +197,7 @@ def analyze_string(string, find_params):
     else:
         result.append(-1)
     if find_params[2] > 0:
-        result.append(max_triplex_strength(string, find_params[2]))
+        result.append(max_triplex_strength(string))
     else:
         result.append(-1)
     return tuple(result)
