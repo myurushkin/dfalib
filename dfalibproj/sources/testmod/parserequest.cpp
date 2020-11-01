@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cassert>
 #include <memory>
+#include <stdexcept>
 #include "parserequest.h"
 
 void private_create_automata(std::list<Token>& input, std::list<Token>::iterator& it,
