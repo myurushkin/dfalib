@@ -1,5 +1,6 @@
 from modules import helpers
 from collections import defaultdict
+import numpy as np
 
 def hairpin_strength(hairpin, tail_left):
     max_strength = 0
