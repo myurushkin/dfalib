@@ -5,6 +5,7 @@
 #include <functional> 
 #include <cctype>
 #include <locale>
+#include <string>
 
 // trim from start
 static inline std::string &ltrim(std::string &s) {
