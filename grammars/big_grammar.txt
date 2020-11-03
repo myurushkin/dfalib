@@ -1,37 +1,18 @@
-GQD = X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}  X{3}X*  g{m}   X*,   m=[1:1]
-IMT = X*  c{a}  X{3}X*  c{a}  X{6}X*  c{a}  X{3}X*  c{a}   X*,   a=[1:1]
+GQD = X* g{m} X{1}X* g{m} X{1}X* g{m} X{1}X* g{m} X*, m=[2:20]
+IMT = X* c{a} X{1}X* c{b} X{2}X* c{a} X{1}X* c{b} X*, a=[2:20], b=[1:20]
 
-HRP_1 = X*  a{a}t{t}c{c}g{g} X{4}X* c{g}g{c}a{t}t{a} X*, a=[1:1], t=[1:1], c=[1:1], g=[1:1]
+HRP_1 = X*  a{a} X* t{t} X* c{c} X* g{g} X{3}X* c{g} X* g{c} X* a{t} X* t{a} X*, a=[1:], t=[1:], c=[1:], g=[1:]
 
-TRP_1 = X*  a  X{4}X*  t  X{3}X*  g  X*
-TRP_2 = X*  c  X{4}X*  g  X{3}X*  t  X*
-TRP_3 = X*  t  X{4}X*  a  X{3}X*  g  X*
-TRP_4 = X*  c  X{4}X*  a  X{3}X*  t  X*
-TRP_5 = X*  a  X{4}X*  c  X{3}X*  g  X*
-TRP_6 = X*  t  X{4}X*  a  X{3}X*  t  X*
-TRP_7 = X*  a  X{4}X*  g  X{3}X*  c  X*
-TRP_8 = X*  a  X{4}X*  t  X{3}X*  t  X*
-TRP_9 = X*  a  X{4}X*  t  X{3}X*  c  X*
-TRP_10 = X*  t  X{4}X*  c  X{3}X*  g  X*
-TRP_11 = X*  g  X{4}X*  c  X{3}X*  a  X*
-TRP_12 = X*  c  X{4}X*  g  X{3}X*  c  X*
-TRP_13 = X*  a  X{4}X*  a  X{3}X*  t  X*
-TRP_14 = X*  c  X{4}X*  g  X{3}X*  g  X*
-TRP_15 = X*  t  X{4}X*  g  X{3}X*  c  X*
-TRP_16 = X*  t  X{4}X*  a  X{3}X*  c  X*
-TRP_17 = X*  t  X{4}X*  a  X{3}X*  a  X*
-TRP_18 = X*  g  X{4}X*  g  X{3}X*  c  X*
-TRP_19 = X*  a  X{4}X*  t  X{3}X*  a  X*
-TRP_20 = X*  g  X{4}X*  c  X{3}X*  c  X*
-TRP_21 = X*  g  X{4}X*  c  X{3}X*  g  X*
-TRP_22 = X*  t  X{4}X*  t  X{3}X*  a  X*
-TRP_23 = X*  g  X{4}X*  t  X{3}X*  a  X*
-TRP_24 = X*  c  X{4}X*  c  X{3}X*  g  X*
-TRP_25 = X*  g  X{4}X*  c  X{3}X*  t  X*
-TRP_26 = X*  g  X{4}X*  a  X{3}X*  t  X*
-TRP_27 = X*  c  X{4}X*  t  X{3}X*  a  X*
-TRP_28 = X*  c  X{4}X*  g  X{3}X*  a  X*
+TRP_1 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* (t{a} c{g}){m}, a=[1:20], g=[0:20], m=[1:20]
+TRP_2 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* (c{g} t{a}){m}, a=[1:20], g=[0:20], m=[1:20]
+TRP_3 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* ((g|a){g} (t|a){a}){m} , a=[1:20], g=[0:20], m=[1:20]
+TRP_4 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* ((g|a){g} (t|a){a}){m}, a=[1:20], g=[0:20], m=[1:20]
+TRP_5 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* (t{a} c{g}){m}, a=[0:20], g=[1:20], m=[1:20]
+TRP_6 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* (c{g} t{a}){m}, a=[0:20], g=[1:20], m=[1:20]
+TRP_7 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* ((g|a){g} (t|a){a}){m} , a=[0:20], g=[1:20], m=[1:20]
+TRP_8 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* ((g|a){g} (t|a){a}){m}, a=[0:20], g=[1:20], m=[1:20]
+
 X = (a|c|g|t)
 result = GQD IMT  \
 	 (HRP_1) \
-	 (TRP_1 | TRP_2 | TRP_3 | TRP_4 | TRP_5 | TRP_6 | TRP_7 | TRP_8 | TRP_9 | TRP_10 | TRP_11 | TRP_12 | TRP_13 | TRP_14 | TRP_15 | TRP_16 | TRP_17 | TRP_18 | TRP_19 | TRP_20 | TRP_21 | TRP_22 | TRP_23 | TRP_24 | TRP_25 | TRP_26 | TRP_27 | TRP_28) 
+	 (TRP_1 | TRP_2 | TRP_3 | TRP_4 | TRP_5 | TRP_6 | TRP_7 | TRP_8)
