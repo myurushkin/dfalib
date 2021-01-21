@@ -1,0 +1,4 @@
+X = acgt{Z}
+    Y = acgt{12}
+    Y = acgt{12}
+Y = acgt{12}
