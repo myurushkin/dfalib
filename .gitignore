@@ -9,3 +9,7 @@ CTestTestfile.cmake
 *.cbp
 *.a
 build-*
+*.pyc
+venv
+
+.idea

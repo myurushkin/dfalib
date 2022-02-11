@@ -32,23 +32,27 @@ variable
    : identifier
    ;
 
-expression
-   : term (additiveoperator expression)?
+expression: nuc_expression | NUM_INT;
+  
+
+nuc_expression
+   : term (additiveoperator? nuc_expression)?
    ;
 
 
 term
-   : factor term? ('{' (IDENT | NUM_INT)  '}')?
+   : factor term? scoped_operator?
    ;
+
+scoped_operator : LBRACE (IDENT | NUM_INT)  RBRACE;
 
 factor
    : variable
    | nucstring
-   | LPAREN expression RPAREN
-   | expression quantifier
+   | LPAREN nuc_expression RPAREN
    ;
 
-quantified_factor : factor quantifier?;
+//quantified_factor : factor quantifier?;
 
 QUESTION : '?';
 STAR : '*';
@@ -61,6 +65,7 @@ additiveoperator
 multiplicativeoperator
    : AND
    ;
+
 
 NUC
    : 'a' | 'g' | 'c' | 't'
@@ -95,6 +100,9 @@ AND
 SEMI
    : ';' | '\n'
    ;
+
+LBRACE: '{';
+RBRACE: '}';
 
 LPAREN
    : '('
