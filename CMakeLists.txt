@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-add_subdirectory(dfalibproj)
-add_subdirectory(parser_test)
-add_subdirectory(dfalibpy)
+add_subdirectory(lib)
+
 
