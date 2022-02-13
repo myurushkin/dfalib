@@ -11,5 +11,8 @@ CTestTestfile.cmake
 build-*
 *.pyc
 venv
-
+build/
 .idea
+*.dll
+*.lib
+dafna.egg-info
