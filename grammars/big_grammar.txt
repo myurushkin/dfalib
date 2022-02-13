@@ -1,16 +1,29 @@
 GQD = X* g{m} X{1}X* g{m} X{1}X* g{m} X{1}X* g{m} X*, m=[2:20]
 IMT = X* c{a} X{1}X* c{b} X{2}X* c{a} X{1}X* c{b} X*, a=[2:20], b=[1:20]
 
-HRP_1 = X*  a{a} X* t{t} X* c{c} X* g{g} X{3}X* c{g} X* g{c} X* a{t} X* t{a} X*, a=[1:2], t=[1:2], c=[1:2], g=[1:2]
+HRP_1 = X*  a{a} X* t{t} X* c{c} X* g{g} X{3}X* c{g} X* g{c} X* a{t} X* t{a} X*, a=[1:], t=[1:], c=[1:], g=[1:]
+
+GA - CT - TC
 
 TRP_1 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* (t{a} c{g}){m}, a=[1:20], g=[0:20], m=[1:20]
 TRP_2 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* (c{g} t{a}){m}, a=[1:20], g=[0:20], m=[1:20]
-TRP_3 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* ((g|a){g} (t|a){a}){m} , a=[1:20], g=[0:20], m=[1:20]
-TRP_4 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* ((g|a){g} (t|a){a}){m}, a=[1:20], g=[0:20], m=[1:20]
+
 TRP_5 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* (t{a} c{g}){m}, a=[0:20], g=[1:20], m=[1:20]
 TRP_6 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* (c{g} t{a}){m}, a=[0:20], g=[1:20], m=[1:20]
+
+
+TRP_3 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* ((g|a){g} (t|a){a}){m} , a=[1:20], g=[0:20], m=[1:20]
+TRP_4 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* ((g|a){g} (t|a){a}){m}, a=[1:20], g=[0:20], m=[1:20]
+
+
 TRP_7 = X* (g{g} a{a}){m} X{3}X* (c{g} t{a}){m} X{3}X* ((g|a){g} (t|a){a}){m} , a=[0:20], g=[1:20], m=[1:20]
 TRP_8 = X* (c{g} t{a}){m} X{3}X* (a{g} g{a}){m} X{3}X* ((g|a){g} (t|a){a}){m}, a=[0:20], g=[1:20], m=[1:20]
+
+
+g a - c t - t c
+c t - a g - c t
+g a - c t - g t
+c t - a g - g
 
 X = (a|c|g|t)
 result = GQD IMT  \

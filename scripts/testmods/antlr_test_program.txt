@@ -1,5 +1,0 @@
-Z1 = 13
-X = acgt{12}acgYgga
-Y = acgt{Z1}
-Y = acgt{12}
-Y = acgt{12}
