@@ -97,7 +97,8 @@ def pintersect(*arg):
                 result = (result.intersect(it) if result != None else it).minimize()
             continue
         assert type(item) is Automata
-        result = (result.intersect(item) if result != None else it).minimize()
+        it = item
+        result = (result.intersect(it) if result != None else it).minimize()
     return result
 
 
@@ -130,6 +131,7 @@ def createHRP(counts, ctx):
     print(pattern)
     return ctx.create_pattern(pattern)
 
+
 if __name__ == "__main__":
     ctx = Context()
     X = ctx.create_pattern("a|c|g|t", simple=True, name="X")
@@ -140,5 +142,3 @@ if __name__ == "__main__":
     result = pintersect(GQDs + HRPs)
     for ss in result.min_strings():
         print("{}: {}".format(ss, str(analyze_string(ss, [True]*4))))
-
-
