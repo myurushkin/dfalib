@@ -1,9 +1,7 @@
-import ctypes, os
+import ctypes, os, sys
 
-
-#dafnalib = ctypes.cdll.LoadLibrary(os.path.join("/home/misha/projects-git/dafna_private/build-lib-Qt_5_11_2_gcc_64-Release/sources/dafna", "libdafna.so"))
-
-dafnalib = ctypes.cdll.LoadLibrary(os.path.join(os.path.dirname(os.path.realpath(__file__)), "lib", "libdafna.so"))
+share_file_name = "dafna.dll" if sys.platform == 'win32' else "libdafna.so"
+dafnalib = ctypes.cdll.LoadLibrary(os.path.join(os.path.dirname(os.path.realpath(__file__)), "lib", share_file_name))
 
 def dafna_min_strings_iterator_create(obj):
     fun = dafnalib.dafna_min_strings_iterator_create
