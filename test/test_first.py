@@ -13,7 +13,7 @@ class TestFirst(unittest.TestCase):
             y = '(a|c|t){0,4}'
             x = '(a|c|t|g)'
             g_group_size = "Y*".join(['g'] * g_count)
-            pattern = "X*" + "#" + "X+".join([g_group_size] * 4) + "#|" + "X*"
+            pattern = "X*" + "X+".join([g_group_size] * 4) + "X*"
             pattern = pattern.replace("X", x)
             select_parts_pattern_for_dilute = random.sample(range(0, 4), k=3)
             while True:
