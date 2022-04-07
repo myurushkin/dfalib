@@ -1,5 +1,6 @@
 from collections import defaultdict
 import numpy as np
+import re
 import random
 
 
@@ -90,37 +91,22 @@ def max_hairpin_strength(string):
             max_head_size = new_head_size
             max_i = i
             cw = cw_new
-#    print("head_start: {}".format(max_i + 1))
-#    print("head_size: {}".format(max_head_size))
+    #    print("head_start: {}".format(max_i + 1))
+    #    print("head_size: {}".format(max_head_size))
     return cw
 
 
-def max_gquadruplex_strength(string):
-    min_g_count = 8
-    g_count = 0
-    for s in string:
-        if s == 'g':
-            g_count += 1
-    if g_count < min_g_count:
-        return 0
-    groups_count = 4
-    max_strength = 0
-    while True:
-        new_strength = max_strength + 1
-        finded_groups = 0
-        current_count_in_group = 0
-        i = 0
-        while i < len(string):
-            if string[i] == 'g':
-                current_count_in_group += 1
-                if current_count_in_group == new_strength:
-                    current_count_in_group = 0
-                    finded_groups += 1
-                    i += 1
-            i += 1
-        if finded_groups < groups_count:
-           return max_strength
-        max_strength = new_strength
+def gqd_max_strength(string):
+    gqd_pattern = \
+        '(((((g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)(a|c|t|g)+)){{3}}(g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)'
+    whole_g_groups = [len(g_group) for g_group in re.findall(r'g{2,}', string)]
+    whole_g_groups.sort(reverse=True)
+
+    for n in whole_g_groups:
+        temp_pattern = gqd_pattern.format(n_subtraction_one=n - 1)
+        if re.findall(temp_pattern, string):
+            return n
+    return 0
 
 
 def max_imotiv_stength(input_string):
@@ -134,8 +120,7 @@ def max_imotiv_stength(input_string):
     for i, c in enumerate(input_string):
         counts[i + 1] = counts[i]
         if c == 'c':
-            counts[i+1] += 1
-
+            counts[i + 1] += 1
 
     def cnt(begin, end):
         if begin >= end:
@@ -146,9 +131,9 @@ def max_imotiv_stength(input_string):
         for cursor_left in range(cursor_central):
             for cursor_right in range(cursor_central, len(input_string)):
                 left_group_size = cnt(0, cursor_left)
-                second_group_size = cnt(cursor_left+1, cursor_central)
-                third_group_size = cnt(cursor_central+2, cursor_right)
-                last_group_size = cnt(cursor_right+1, len(input_string))
+                second_group_size = cnt(cursor_left + 1, cursor_central)
+                third_group_size = cnt(cursor_central + 2, cursor_right)
+                last_group_size = cnt(cursor_right + 1, len(input_string))
 
                 if min([left_group_size, second_group_size, third_group_size, last_group_size]) == 0:
                     continue
@@ -160,29 +145,29 @@ def max_imotiv_stength(input_string):
 
 def is_triplex(left_part, center_part, right_part, case):
     if case == "left":
-        #yry
+        # yry
         if is_complimentary_strings(left_part, center_part) \
                 and is_complimentary_strings(left_part, right_part, reverse_complimentary=True):
             return True
-        #yrr
+        # yrr
         if is_complimentary_strings(left_part, center_part) \
                 and is_weak_complimentary_strings(left_part, right_part):
             return True
     if case == "center":
-        #yry
+        # yry
         if is_complimentary_strings(center_part, left_part, reverse_complimentary=True) \
                 and is_complimentary_strings(center_part, right_part, reverse_complimentary=True):
             return True
-        #yrr
+        # yrr
         if is_complimentary_strings(center_part, left_part, reverse_complimentary=True) \
                 and is_weak_complimentary_strings(center_part, right_part, reverse_complimentary=True):
             return True
     if case == "right":
-        #yry
+        # yry
         if is_complimentary_strings(right_part, center_part, reverse_complimentary=True) \
                 and is_complimentary_strings(right_part, left_part):
             return True
-        #yrr
+        # yrr
         if is_complimentary_strings(right_part, center_part, reverse_complimentary=True) \
                 and is_weak_complimentary_strings(right_part, left_part):
             return True
@@ -201,7 +186,7 @@ def max_triplex_strength(string):
             cash_dict[i][j] = string[i:j]
 
     for i in range(len(string)):
-        for j in range(i+1, len(string)):
+        for j in range(i + 1, len(string)):
             candidate = cash_dict[i][j]
             set_candidate = set(candidate)
             if set_candidate != ag_set and set_candidate != a_set and set_candidate != g_set:
@@ -215,7 +200,7 @@ def max_triplex_strength(string):
                     left_end = i - x
                     left_start = i - x - candidate_len
                     right_start = i + candidate_len + y
-                    right_end = i + 2*candidate_len + y
+                    right_end = i + 2 * candidate_len + y
 
                     left_part = cash_dict[left_start][left_end]
                     right_part = cash_dict[right_start][right_end]
@@ -227,9 +212,9 @@ def max_triplex_strength(string):
                         max_strength = max(max_strength, candidate_len)
                         continue
 
-                    #left_case:
+                    # left_case:
                     center_start = i + candidate_len + x
-                    center_end = i + 2*candidate_len + x
+                    center_end = i + 2 * candidate_len + x
                     right_start = center_end + y
                     right_end = center_end + y + candidate_len
                     left_part = candidate
@@ -241,7 +226,7 @@ def max_triplex_strength(string):
                     if is_triplex(right_part[::-1], center_part[::-1], left_part[::-1], "left"):
                         max_strength = max(max_strength, candidate_len)
                         continue
-                    #right case
+                    # right case
                     center_start = i - candidate_len - x
                     center_end = center_start + candidate_len
                     left_start = center_start - y - candidate_len
@@ -256,8 +241,6 @@ def max_triplex_strength(string):
                         max_strength = max(max_strength, candidate_len)
                         continue
     return max_strength
-
-
 
 
 def analyze_string(string, find_params):
