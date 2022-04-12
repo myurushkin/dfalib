@@ -66,7 +66,7 @@ class Automata:
         it = dafna_min_strings_iterator_create(self.obj)
         while dafna_min_strings_iterator_at_end(it) == False:
             next_value = dafna_min_strings_iterator_value(it)
-            yield  next_value.decode('utf-8')
+            yield next_value.decode('utf-8')
             dafna_min_strings_iterator_next(it)
         dafna_min_strings_iterator_delete(it)
 

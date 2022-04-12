@@ -1,7 +1,8 @@
 from collections import defaultdict
 import numpy as np
-import re
-import random
+import regex
+
+import rstr
 
 
 def get_triplex_set(kind=1):
@@ -12,10 +13,9 @@ def get_triplex_set(kind=1):
 
 
 def generate_random_string(min_size, max_size):
-    size = random.randint(min_size, max_size)
-    map_array = ['a', 't', 'g', 'c']
-    arr = np.random.randint(4, size=size)
-    return ''.join(list(map(lambda x: map_array[x], arr)))
+    if min_size > max_size:
+        raise ValueError
+    return rstr.xeger(f'(a|c|g|t){min_size, max_size}')
 
 
 def generate_random_strings(min_size, max_size, count):
@@ -104,7 +104,9 @@ def gqd_max_strength(string):
 
     for n in whole_g_groups:
         temp_pattern = gqd_pattern.format(n_subtraction_one=n - 1)
-        if re.findall(temp_pattern, string):
+        match_sub_str = regex.findall(temp_pattern, string)
+        a = [regex.findall(f'g{{{n}}}', sub_str[0]) for sub_str in match_sub_str]
+        if match_sub_str and any([regex.findall(f'g{{{n}}}', sub_str[0]) for sub_str in match_sub_str]):
             return n
     return 0
 
