@@ -99,7 +99,7 @@ def max_hairpin_strength(string):
 def gqd_max_strength(string):
     gqd_pattern = \
         '(((((g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)(a|c|t|g)+)){{3}}(g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)'
-    whole_g_groups = [len(g_group) for g_group in re.findall(r'g{2,}', string)]
+    whole_g_groups = [len(g_group) for g_group in regex.findall(r'g{2,}', string)]
     whole_g_groups.sort(reverse=True)
 
     for n in whole_g_groups:

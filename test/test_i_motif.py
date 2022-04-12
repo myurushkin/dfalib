@@ -1,4 +1,3 @@
-import random
 import regex
 import unittest
 import rstr
@@ -50,7 +49,7 @@ class TestIMotif(unittest.TestCase):
         b = [i_motif_random_string(n, n+2, True) for n in range(3, 10)]
         pprint.pprint(b)
         pprint.pprint(
-            [dafna.strengh.max_imotiv_stength(bi) for bi in b]
+            [dafna.strength.max_imotiv_stength(bi) for bi in b]
         )
         i_motif_max_strength('cccctgcccctaccccgtacccc', True)
 
