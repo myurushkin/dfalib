@@ -1,5 +1,8 @@
+import itertools
 import random
 import unittest
+
+import regex
 import rstr
 import pprint
 import dafna
@@ -7,7 +10,7 @@ import dafna
 
 class TestTriplexes(unittest.TestCase):
     def test_01(self):
-        generator = range(2, 21)
+        generator = range(2, 4)
 
         def triplex_random_string(count):
             x_group = '(a|c|g|t)'
@@ -28,10 +31,43 @@ class TestTriplexes(unittest.TestCase):
 
             return [rstr.xeger(triplex) for triplex in patterns]
 
-        a = triplex_random_string(2)
-        pprint.pprint(a)
+        # a = triplex_random_string(2)
+        # pprint.pprint(a)
 
-        # self.assertEqual(list(generator), gqd_strings_strength)
+        def triplex_max_strength(string):
+            x_group = '[a|c|g|t]'
+            triplex_forms = [
+                '{A}{{{count}}}{X}{{4,}}{C}{{{count}}}{X}{{3,}}{B}{{{count}}}',
+                '{A}{{{count}}}{X}{{3,}}{B}{{{count}}}{X}{{3,}}{C}{{{count}}}',
+            ]
+            triplex_groups_options = [
+                {'A': '[t|c]', 'B': 'a', 'C': 't'},
+                {'A': '[c|g|a]', 'B': 'g', 'C': 'c'},
+                {'A': 'g', 'B': 't', 'C': 'a'},
+                {'A': '[t|c]', 'B': 'c', 'C': 'g'},
+            ]
+            strength = 0
+            for triplex_form in triplex_forms:
+                groups = '({item}{{1,}})'
+                for triplex_item in triplex_groups_options:
+                    b_match = regex.findall(groups.format(item=triplex_item['B']), string)
+                    c_match = regex.findall(groups.format(item=triplex_item['C']), string)
+                    if c_match and b_match:
+                        start_count_n = min(
+                            [max([len(b_gr) for b_gr in b_match]), max([len(c_gr) for c_gr in c_match])]
+                        )
+                        for i in range(start_count_n, 1, -1):
+                            triplex_match = regex.findall(
+                                triplex_form.format(count=i, X=x_group, A=triplex_item['A'], B=triplex_item['B'],
+                                                    C=triplex_item['C']), string)
+                            if any(triplex_match):
+                                strength = strength if strength > i else i
+
+            return strength
+
+        a = triplex_random_string(2) + triplex_random_string(3) + triplex_random_string(4)
+        # pprint.pprint(a)
+        pprint.pprint([item for item in zip(a, [triplex_max_strength(s) for s in a])])
 
     def test_02(self):
         generator = [2, 3, 4, 5]

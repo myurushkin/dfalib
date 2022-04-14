@@ -28,7 +28,8 @@ class TestFirst(unittest.TestCase):
         gqd_strings_strength = [dafna.gqd_max_strength(gqd) for gqd in gqd_strings]
         # pprint.pprint(dict(zip(gqd_strings,  gqd_strings_strength)), sort_dicts=False)
         self.assertEqual(list(generator), gqd_strings_strength)
-        self.assertNotEqual(2, dafna.gqd_max_strength('gagatatgagaagagagag'))
+        print(dafna.gqd_max_strength('gcgcgcgcgcgcgcgcgcgcgcgggc'))
+        self.assertNotEqual(2, dafna.gqd_max_strength('ttgggagggtgggcgggaa'))
 
     def test_02(self):
         generator = [2, 3, 4, 5]

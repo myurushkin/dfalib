@@ -8,7 +8,7 @@ import dafna
 
 class TestIMotif(unittest.TestCase):
     def test_01(self):
-        generator = range(3, 20)
+        generator = range(3, 21)
 
         def i_motif_random_string(n, m, biological_significance=False):
             x_group = '(a|g|t|c)'
@@ -63,6 +63,8 @@ class TestIMotif(unittest.TestCase):
                          [i_motif_max_strength(i_motif, True) for i_motif in biological_significance_strings])
         self.assertEqual([(n + n + 2) / 2 for n in list(generator)],
                          [i_motif_max_strength(i_motif, False) for i_motif in no_biological_significance_strings])
+
+        print(i_motif_max_strength('ccctaaccaaccccccccct', True))
 
     # def test_02(self):
     #     generator = [2, 3, 4, 5]
