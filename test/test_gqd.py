@@ -1,10 +1,9 @@
-import random
 import unittest
 import rstr
 import dafna
 
 
-class TestFirst(unittest.TestCase):
+class TestGQD(unittest.TestCase):
     def test_00(self):
         values = [
             ('ggaggaggaggaggaggaggagg', 2),
