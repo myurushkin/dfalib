@@ -63,18 +63,42 @@ def hairpin_max_strength(string):
     return strength
 
 
-def gqd_max_strength(string):
-    gqd_pattern = \
-        '(((((g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)(a|c|t|g)+)){{3}}(g(a|c|t){{0,4}}){{{n_subtraction_one}}}g)'
-    whole_g_groups = [len(g_group) for g_group in regex.findall(r'g{2,}', string)]
-    whole_g_groups.sort(reverse=True)
+def gqd_max_strength(input_string):
+    total_g_count = input_string.count('g')
+    max_group_size_estimate = total_g_count // 4
+    min_possible_group_size = 2
+    max_bubble_count = 3
+    group_count_in_gqd = 4
+    g_seqs = [len(g_group) for g_group in regex.findall(r'g+', input_string)]
 
-    for n in whole_g_groups:
-        temp_pattern = gqd_pattern.format(n_subtraction_one=n - 1)
-        match_sub_str = regex.findall(temp_pattern, string)
-        a = [regex.findall(f'g{{{n}}}', sub_str[0]) for sub_str in match_sub_str]
-        if match_sub_str and any([regex.findall(f'g{{{n}}}', sub_str[0]) for sub_str in match_sub_str]):
-            return n
+    def check_str(filled_g_group_count, bubble_count, current_seq, used_g_in_seq_count):
+        if bubble_count > max_bubble_count:
+            return False
+        if filled_g_group_count >= group_count_in_gqd:
+            return True
+        if current_seq >= len(g_seqs):
+            return False
+        rest = g_seqs[current_seq] - used_g_in_seq_count
+        assert rest > 0
+
+        if group_size <= rest:
+            if group_size + 1 < rest:
+                return check_str(filled_g_group_count + 1, bubble_count, current_seq, used_g_in_seq_count + group_size + 1)
+            else:
+                return check_str(filled_g_group_count + 1, bubble_count, current_seq + 1, 0)
+        else:
+            if current_seq + 1 >= len(g_seqs):
+                return False
+            if rest + g_seqs[current_seq + 1] <= group_size:
+                res = check_str(filled_g_group_count+1, bubble_count + 1, current_seq + 1, g_seqs[current_seq+1] - (group_size - rest) - 1)
+                if res == True:
+                    return True
+            return check_str(filled_g_group_count, bubble_count, current_seq + 1, 0)
+        raise Exception("Control flow error")
+
+    for group_size in range(max_group_size_estimate, min_possible_group_size - 1, -1):
+        if check_str(filled_g_group_count=0, bubble_count=0, current_seq=0, used_g_in_seq_count=0):
+            return group_size
     return 0
 
 

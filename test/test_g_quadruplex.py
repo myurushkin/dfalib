@@ -5,38 +5,23 @@ import dafna
 
 
 class TestFirst(unittest.TestCase):
-    def test_01(self):
-        generator = range(2, 30)
+    def test_00(self):
+        values = [
+            ('ggaggaggaggaggaggaggagg', 2),
+            ('ggggggggggg', 2),
+            ('ggaggaggagg', 2),
+            ('ggaggaggaga', 0),
+        ]
 
-        def gqd_random_string(g_count):
-            y = '(a|c|t){0,4}'
-            x = '(a|c|t)'
-            g_group_size = "Y*".join(['g'] * g_count)
-            pattern = 'X*' + "X+".join([g_group_size] * 4) + 'X*'
-            pattern = pattern.replace("X", x)
+        for str_val, val in values:
+            self.assertEqual(dafna.gqd_max_strength(str_val), val)
 
-            select_parts_pattern_for_dilute = random.sample(range(0, 4), k=3)
+    def test01(self):
+        for x in range(2, 10):
+            value = ('g' * x).join([rstr.rstr('act') for _ in range(5)])
+            self.assertEqual(dafna.gqd_max_strength(value), x)
 
-            parts_pattern = pattern.split('+', -1)
-            pattern = '+'.join([part.replace('Y*', y) if
-                                idx in select_parts_pattern_for_dilute else part.replace('Y*', '') for idx, part in
-                                enumerate(parts_pattern)])
-            return rstr.xeger(pattern)
-
-        gqd_strings = [gqd_random_string(n) for n in generator]
-        gqd_strings_strength = [dafna.gqd_max_strength(gqd) for gqd in gqd_strings]
-        self.assertEqual(list(generator), gqd_strings_strength)
-        self.assertNotEqual(2, dafna.gqd_max_strength('ttgggagggtgggcgggaa'))
-
-    def test_02(self):
-        generator = [2, 3, 4, 5]
-
-        gqd_strings = [
-            'accattcacccgggaaggtagggcaaactccattcacccttctggaacacctcaacaattattactactactatatccggggcaaactaaaccctttaacctccactctgtttacaatccaaaaatctattctctatcctcgaacgcttcctacacatacaattatttcggctttatcccaccataactccttcttcattcatttgagctaccttcaatttatacattaacatccctcactcctgactatcacaagaacacattcaccaggatacaattcataaagaacttccccttatcatccagtctcactacaa',
-            'cttccacataaactatggtacacttttttttttctcttaaagggtcaaacccccaaaaatccttctccgaaaaaaggctacttggcaaaaccccaaccccattttctccatcccatataactactagttctgatgctaaccactcacacacccaatatatttccaaacttcaatcactctttttcacctaagggtttcctatcccaaattacacttcctttgggactaccctatattaaaattccaactcccacccatcatcaccactaatattccc',
-            'ctcttttcattctacagggtctctatcacataacctcttattttcttataccattccttacccgctcaggtgcaatccattcatacaaaaatttcaacacttcaaactctggggacactctacactactttacacaactccttataccatcacatctcatttccacctattcctatttcattattccattatataattacaccaccaggggacactctacccaattcctttgctcctcctctacccaaaaagtttacttctcaacaggggtcatcctcatcagatataac',
-            'acccacatttactgacaacaactcccaacttgtgagtctccattcaatcttataaatatcaaatatcaaatataatcaaaacttaatcctttcagggggcccaatatatataatgatgacagtatcgtccgcccaactttaacactcacttccaatatcaatcttcattcccctaattcaccccctcactatacttaattagtgctgtactgctgtacttctttctccgttataaaacctttataaccgcttcataaaactatcccaatatttatatcatttctaacccctaacttaatcctaattttttagcgcactgtaagttgaaaactactacttatttatcctaaaacactttcacaacacccaacctttctctcttttatcactcttaagatcacattctagactcccctttca',
-            ]
-        self.assertEqual(3, dafna.gqd_max_strength('ggaggaggaggactctctatctgggagggagggaggg'))
-        gqd_strings_strength = [dafna.gqd_max_strength(gqd) for gqd in gqd_strings]
-        self.assertEqual(generator, gqd_strings_strength)
+    def test02(self):
+        for x in range(12, 20):
+            value = ('g' * x).join([rstr.rstr('act') for _ in range(2)])
+            self.assertEqual(dafna.gqd_max_strength(value), (x - 3)//4)
