@@ -6,6 +6,10 @@ import dafna
 class TestGQD(unittest.TestCase):
     def test_00(self):
         values = [
+            ('gggcgggagggtagcggggggc', 3),
+            ('gagaggtgagaggcg', 2),
+            ('ggaggaggagcg', 2),
+            ('cgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcg', 0),
             ('ggaggaggaggaggaggaggagg', 2),
             ('ggggggggggg', 2),
             ('ggaggaggagg', 2),

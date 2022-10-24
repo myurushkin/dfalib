@@ -89,10 +89,24 @@ def gqd_max_strength(input_string):
         else:
             if current_seq + 1 >= len(g_seqs):
                 return False
-            if rest + g_seqs[current_seq + 1] <= group_size:
-                res = check_str(filled_g_group_count+1, bubble_count + 1, current_seq + 1, g_seqs[current_seq+1] - (group_size - rest) - 1)
-                if res == True:
+
+            if g_seqs[current_seq + 1] - (group_size - rest) >= 0:
+                if filled_g_group_count + 1 >= group_count_in_gqd and bubble_count + 1 <= max_bubble_count:
                     return True
+
+                if g_seqs[current_seq + 1] - (group_size - rest) > 1:
+                    if check_str(filled_g_group_count + 1,
+                                    bubble_count + 1,
+                                    current_seq + 1,
+                                    (group_size - rest) + 1):
+                        return True
+                else:
+                    if check_str(filled_g_group_count + 1,
+                                    bubble_count + 1,
+                                    current_seq + 2,
+                                    0):
+                        return True
+
             return check_str(filled_g_group_count, bubble_count, current_seq + 1, 0)
         raise Exception("Control flow error")
 
