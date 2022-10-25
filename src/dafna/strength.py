@@ -1,8 +1,8 @@
 from collections import defaultdict
 import numpy as np
 import regex
-
-import rstr
+import random
+import rstr, itertools
 
 
 def replace_complimentary_symbol(string):
@@ -61,6 +61,51 @@ def hairpin_max_strength(string):
                                     temp_strength = len(match_case[0]) + len(match_case[2])
                                     strength = strength if strength > temp_strength else temp_strength
     return strength
+
+
+def gqd_max_strength_naive(input_string):
+    positions = []
+    g_count = [0] * len(input_string)
+    for i in range(len(input_string)):
+        if input_string[i] == 'g':
+            positions.append(i)
+        g_count[i] = 1 if input_string[i] == 'g' else 0
+        if i > 0:
+            g_count[i] += g_count[i-1]
+
+    best_strength = 0
+    for pos in list(itertools.combinations(positions, 8)):
+        pos = sorted(pos)
+        good = True
+        bubble_count = 0
+        strength = 1000
+        for i in range(4):
+            group_strength = g_count[pos[i * 2 + 1]] - g_count[pos[i * 2]] + 1
+            strength = min(strength, group_strength)
+            if group_strength < 2:
+                good = False
+                break
+            assert group_strength <= pos[i * 2 + 1] - pos[i * 2] + 1
+
+            bubble_count_in_group = 0
+            for k in range(pos[i * 2] + 1, pos[i * 2 + 1] + 1):
+                if input_string[k] == 'g' and input_string[k-1] != 'g':
+                    bubble_count_in_group += 1
+
+            if bubble_count_in_group > 1:
+                good = False
+                break
+
+            if bubble_count_in_group == 1:
+                bubble_count += 1
+
+            if i > 0 and pos[i*2] == pos[(i-1)*2+1] + 1:
+                good = False
+                break
+
+        if good == True and bubble_count <= 3:
+            best_strength = max(strength, best_strength)
+    return best_strength
 
 
 def gqd_max_strength(input_string):

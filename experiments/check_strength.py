@@ -16,7 +16,7 @@ if __name__ == "__main__":
                 {
                     "String": str,
                     "GQD": strength.gqd_max_strength(str),
-                    "IMT": strength.i_motif_max_strength(str),
+                    "IMT": max(strength.i_motif_max_strength(str, False), strength.i_motif_max_strength(str, True)),
                     "TRP": strength.triplex_max_strength(str),
                     "HRP": strength.hairpin_max_strength(str)
                 },

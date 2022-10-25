@@ -1,3 +1,4 @@
+import random
 import unittest
 import rstr
 import dafna
@@ -28,3 +29,8 @@ class TestGQD(unittest.TestCase):
         for x in range(12, 20):
             value = ('g' * x).join([rstr.rstr('act') for _ in range(2)])
             self.assertEqual(dafna.gqd_max_strength(value), (x - 3)//4)
+
+    def test03(self):
+        for _ in range(1000):
+            input_string = rstr.rstr('acgt', random.randint(15, 40))
+            self.assertEqual(dafna.gqd_max_strength(input_string), dafna.gqd_max_strength_naive(input_string))
