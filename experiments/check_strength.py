@@ -1,6 +1,6 @@
 import pandas as pd
 import json, tqdm
-from dafna import strength
+from dafna.lib.strength import strength
 
 if __name__ == "__main__":
     input_file = "random"

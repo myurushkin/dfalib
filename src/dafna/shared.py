@@ -1,9 +1,7 @@
-import ctypes, os
-import pathlib
 import uuid
 from dafna.internal import *
 from graphviz import Source
-from dafna.strength import *
+from dafna.lib.strength.strength import *
 
 class Context:
     def __init__(self):
