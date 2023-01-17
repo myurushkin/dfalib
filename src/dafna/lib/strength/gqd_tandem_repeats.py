@@ -1,26 +1,16 @@
 import re
 import itertools
 
+
 # Убираем повторы и строки, где 2 икса подряд
 def filterUnique(arraySeq: [str]):
-    maxLength = len(arraySeq[-1])
     resArray = []
     for seq in arraySeq:
         if ('x' * 2) in seq:
             continue
         else:
             resArray.extend([seq])
-    resDict = {}
-    for seq in resArray:
-        for length in range(2, maxLength // len(seq) + 1):
-            if seq * length in resArray:
-                resDict[seq * length] = 1
-        if seq in resDict.keys():
-            resDict[seq] = 1
-        else:
-            resDict[seq] = 0
-    resDict2 = dict((k, v) for k, v in resDict.items() if v == 0)
-    return resDict2
+    return resArray
 
 
 # Генерирует все уникальные комбинации вида gx, где g - гуанин, x-любой нуклеотид
@@ -42,22 +32,44 @@ def comb(input_string_len: int):
     return result
 
 
+# PSA - pattern sections amount - функция, подсчитывающая сколько раз подряд встречается паттерн
+def psa(pattern: str, nuclString: str):
+    i = 0
+    flag = False
+    while not flag:
+        i += 1
+        rl = re.compile(pattern.replace('x', '\w') * i)
+        if rl.findall(nuclString):
+            i += 1
+        else:
+            i -= 1
+            flag = True
+    return i
+
+
 def analgc(input_string: str, templateArray: [str]):
-    maxTemplate = ''
+    # делаем из элемента последовательности регулярку
+    lowQ = len(input_string) // 4
+    highQ = (len(input_string) * 3) // 4
     maxForce = 0
-    for l in templateArray:
-        # делаем из элемента последовательности регулярку
-        rl = re.compile(l.replace('x', '\w'))
-        nsForce = l.count('g') * len(rl.findall(input_string))
-        lowQ = len(input_string) // 4
-        highQ = (len(input_string) * 3) // 4
-        if (nsForce > maxForce) and (not re.search('[act]{2,}', input_string[lowQ:highQ])):
-            maxTemplate = l
-            maxForce = nsForce
-    gStrength = maxForce // 4
-    return gStrength, maxTemplate, input_string
+    maxTemplate = ''
+
+    if not re.search('[act]{2,}', input_string[lowQ:highQ]):
+        for l in templateArray:
+            rl = re.compile(l.replace('x', '\w') * 4)
+            nsForce = l.count('g')
+            if nsForce > maxForce and rl.findall(input_string):
+                maxForce = nsForce
+                maxTemplate = l
+    gStrength = maxTemplate.count('g')
+    if gStrength == 1:
+        gStrength = 0
+    # return gStrength, maxTemplate, input_string
+    return gStrength
 
 
 def max_strength(input_string):
+    # добавил по символу слева и справа чтобы нормально обсчитывались обрезанные ТП типа ggaggaggagg
+    input_string = 'x' + input_string + 'x'
     templateArray = comb(len(input_string))
-    return analgc(input_string, templateArray)[0]
+    return analgc(input_string, templateArray)

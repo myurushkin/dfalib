@@ -3,7 +3,7 @@ import unittest
 import regex
 import rstr
 import dafna
-
+from dafna.lib.strength import hairpin
 
 class TestHairpin(unittest.TestCase):
     def test_01(self):
@@ -29,3 +29,15 @@ class TestHairpin(unittest.TestCase):
         hairpin_strings = [hairpin_random_string(n) for n in range(3, 20)]
 
         self.assertEqual(list(range(3, 20)), [dafna.hairpin_max_strength(hairpin) for hairpin in hairpin_strings])
+
+    def test_02(self):
+        values = [
+            ('atatatatatatatatatatatatatatatatatatatatatatatatatatatatatat', 28),
+            ('acgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacg', 18),
+            ('aaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaatt', 23),
+
+        ]
+
+        for str_val, val in values:
+            print(str_val)
+            self.assertEqual(hairpin.max_hairpin_strength(str_val), val)
