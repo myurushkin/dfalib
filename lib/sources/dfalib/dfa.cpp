@@ -5,6 +5,7 @@
 #include <stack>
 #include <list>
 #include <map>
+#include <limits>
 #include <algorithm>
 
 using namespace std;
