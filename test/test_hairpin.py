@@ -4,9 +4,74 @@ import regex
 import rstr
 import dafna
 from dafna.lib.strength import hairpin
+from collections import defaultdict
+import json
+
+import json
+from random import random
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+
+def draw(n : dict):
+    g = nx.PlanarEmbedding()
+    g.set_data(n)
+    pos = nx.planar_layout(g)  # here are your positions.
+    # pos = nx.spring_layout(g, pos=pos, seed=int(2**32 - 1 * random()))
+    nx.draw_networkx(g, pos, with_labels=True)
+    plt.show()
+
+
+def print_pic(nucls, pic):
+    nodes = defaultdict(list)
+    def name(ind):
+        return f"{nucls[ind]}{ind}"
+
+    for i in range(len(nucls) - 1):
+        nodes[name(i)].append(name(i+1))
+
+    for i in range(1, len(nucls)):
+        nodes[name(i)].append(name(i-1))
+
+    for pair in pic:
+        nodes[name(pair[0])].append(name(pair[1]))
+        nodes[name(pair[1])].append(name(pair[0]))
+
+    draw(nodes)
+
 
 class TestHairpin(unittest.TestCase):
+
     def test_01(self):
+        ss = 'gcggatttagctcagttgggagagcgccagactgaatatctggaggtcctgtgttcgatccacagaattcgcacc'
+        #ss = 'atatatatatatatatatatatatatatatatatatatatatatatatatatatatatat'
+        # res, pic = hairpin.max_hairpin_strength_2(ss)
+        #
+        # with open("graph.json", 'w') as f:
+        #     json.dump({"string": ss, "edges": pic}, f, indent=4)
+
+
+        s = 'acg' * 6
+        values = [
+           # ('gcggatttagctcagttgggagagcgccagactgaatatctggaggtcctgtgttcgatccacagaattcgcacc', 12),
+            (s, 5),
+            ('aagcatt', 2),
+            ('', 0),
+            ('aaat', 0),
+            ('aaaat', 1),
+
+            ('aaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaatt', 23),
+            ('atatatatatatatatatatatatatatatatatatatatatatatatatatatatatat', 28),
+            #('acgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacg', 18),
+        ]
+
+        for str_val, val in values:
+            print(str_val)
+            self.assertEqual(hairpin.max_hairpin_strength(str_val), val)
+
+    def test_02(self):
+        return
         def hairpin_random_string(strength):
             n = random.randint(1, strength - 1)
             m = strength - n
@@ -30,14 +95,4 @@ class TestHairpin(unittest.TestCase):
 
         self.assertEqual(list(range(3, 20)), [dafna.hairpin_max_strength(hairpin) for hairpin in hairpin_strings])
 
-    def test_02(self):
-        values = [
-            ('atatatatatatatatatatatatatatatatatatatatatatatatatatatatatat', 28),
-            ('acgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacgacg', 18),
-            ('aaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaattaaatt', 23),
 
-        ]
-
-        for str_val, val in values:
-            print(str_val)
-            self.assertEqual(hairpin.max_hairpin_strength(str_val), val)

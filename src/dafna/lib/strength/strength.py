@@ -98,36 +98,67 @@ def i_motif_max_strength(string, biological_significance: bool = False):
     return strength
 
 
-def triplex_max_strength(string):
-    x_group = '[a|c|g|t]'
-    triplex_forms = [
-        '{A}{{{count}}}{X}{{4,}}{C}{{{count}}}{X}{{3,}}{B}{{{count}}}',
-        '{A}{{{count}}}{X}{{3,}}{B}{{{count}}}{X}{{3,}}{C}{{{count}}}',
-    ]
-    triplex_groups_options = [
-        {'A': '[t|c]', 'B': 'a', 'C': 't'},
-        {'A': '[c|g|a]', 'B': 'g', 'C': 'c'},
-        {'A': 'g', 'B': 't', 'C': 'a'},
-        {'A': '[t|c]', 'B': 'c', 'C': 'g'},
-    ]
-    strength = 0
-    for triplex_form in triplex_forms:
-        groups = '({item}{{1,}})'
-        for triplex_item in triplex_groups_options:
-            b_match = regex.findall(groups.format(item=triplex_item['B']), string)
-            c_match = regex.findall(groups.format(item=triplex_item['C']), string)
-            if c_match and b_match:
-                start_count_n = min(
-                    [max([len(b_gr) for b_gr in b_match]), max([len(c_gr) for c_gr in c_match])]
-                )
-                for i in range(start_count_n, 1, -1):
-                    triplex_match = regex.findall(
-                        triplex_form.format(count=i, X=x_group, A=triplex_item['A'], B=triplex_item['B'],
-                                            C=triplex_item['C']), string)
-                    if any(triplex_match):
-                        strength = strength if strength > i else i
+def triplex_max_strength_for_patterns(val, patterns, dir):
+    result = 0
+    value = val.lower()
+    for strength in range(1, len(value)):
+        for indent in range(len(value)):
+            for linker_first_size in range(3, len(value)):
+                for linker_second_size in range(3, len(value)):
+                    if indent + 3 * strength + linker_first_size + linker_second_size > len(value):
+                        break
 
-    return strength
+                    A = value[indent:indent+strength]
+                    B = value[indent+strength+linker_first_size:indent+strength+linker_first_size+strength]
+                    C = value[indent + strength + linker_first_size + strength + linker_second_size: indent + strength + linker_first_size + strength + linker_second_size + strength]
+
+                    assert len(B) == strength
+
+                    check = False
+                    for i in range(strength):
+                        for p in patterns:
+                            if A[i] != p[0]:
+                                continue
+                            if dir == 1:
+                                if B[len(B) - i - 1] != p[1]:
+                                    continue
+                                if C[i] != p[2]:
+                                    continue
+                            else:
+                                if B[len(B) - i - 1] != p[2]:
+                                    continue
+                                if C[i] != p[1]:
+                                    continue
+                            check = True
+                            break
+
+                        if check == False:
+                            break
+                    if check == True:
+                        result = max(result, strength)
+                        break
+                if result == strength:
+                    break
+            if result == strength:
+                break
+        if result != strength:
+            break
+    return result
+
+def triplex_max_strength(val):
+    patterns_first = [
+        'tat', 'cat', 'cgc', 'ggc', 'agc', 'gta', 'tcg', 'ccg'
+    ]
+
+    # patterns_second = [
+    #     'tta', 'cta', 'ccg', 'gcg', 'acg', 'gat', 'tgc', 'cgc'
+    # ]
+
+    return max(*[triplex_max_strength_for_patterns(val, patterns_first, dir=1),
+                  triplex_max_strength_for_patterns(val[::-1], patterns_first, dir=1),
+                 triplex_max_strength_for_patterns(val, patterns_first, dir=-1),
+                 triplex_max_strength_for_patterns(val[::-1], patterns_first, dir=-1)])
+
 
 
 def analyze_string(string, find_params):

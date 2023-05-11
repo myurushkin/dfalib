@@ -1,3 +1,5 @@
+from functools import *
+
 ''' Новая версия определения силы шпильки'''
 def complement(nucl1:chr,nucl2:chr):
     state = False
@@ -44,7 +46,54 @@ def dissect(nuclString:str):
     return lleg,head,rleg
 
 
+@cache
+
+
+def max_hairpin_strength_3(items):
+    n = len(items)
+    if n < 5:
+        return 0, tuple([])
+
+    value_first = -1
+    picture_first = []
+    for ind in range(n-1, 0, -1):
+        if complement(items[0][1], items[ind][1]) and ind >= 4:
+            val1, pic1 = max_hairpin_strength_3(items[1:ind])
+            val2, pic2 = max_hairpin_strength_3(items[ind + 1:])
+            val = 1 + val1 + val2
+            if val > value_first:
+                value_first = val
+                picture_first = [(items[0][0], items[ind][0])]
+                picture_first.extend(pic1)
+                picture_first.extend(pic2)
+
+    value_second = -1
+    picture_second = []
+    for ind in range(n):
+        if complement(items[ind][1], items[-1][1]) and len(items) - ind >= 5:
+            val1, pic1 = max_hairpin_strength_3(items[:ind])
+            val2, pic2 = max_hairpin_strength_3(items[ind + 1: -1])
+            val = 1 + val1 + val2
+            if val > value_second:
+                value_second = val
+                picture_second = [(items[ind][0], items[-1][0])]
+                picture_second.extend(pic1)
+                picture_second.extend(pic2)
+            #value_second = max(value_second, 1 + max_hairpin_strength_2(s[ind+1:-1]) + max_hairpin_strength_2(s[:ind]))
+
+    value_third, picture_third = max_hairpin_strength_3(items[1:-1])
+    #picture_third = list(filter(lambda x: x is not None, picture_third))
+
+    return max([(value_first, picture_first),
+                (value_second, picture_second),
+                (value_third, picture_third)], key = lambda x: x[0])
+
+def max_hairpin_strength_2(s:str):
+    ss = tuple(enumerate(s))
+    return max_hairpin_strength_3(ss)
+
 def max_hairpin_strength(nuclString:str):
+    return max_hairpin_strength_2(nuclString)[0]
     '''Строка делится пополам, одна половина записывается в первый массив, вторая во второй. Если деление
     неравномерно, то дописывается вначале ноль. Построить в форме рекурсии. Сделать отдельно функцию, которая проверяет
     подряд идущие связи и рекурсивно пихать в неё разные пары массивов. Продумать, что если находить максимальную
