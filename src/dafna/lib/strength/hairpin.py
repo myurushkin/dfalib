@@ -47,8 +47,6 @@ def dissect(nuclString:str):
 
 
 @cache
-
-
 def max_hairpin_strength_3(items):
     n = len(items)
     if n < 5:
