@@ -6,10 +6,10 @@ from dafna.lib.strength import gqd_canonical
 class TestGQDCanonical(unittest.TestCase):
     def test_00(self):
         values = [
+            ('cgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcg', 0),
             ('gggcgggagggtagcggggggc', 3),
             ('gagaggtgagaggcg', 2),
             ('ggaggaggagcg', 2),
-            ('cgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcg', 0),
             ('ggaggaggaggaggaggaggagg', 2),
             ('ggggggggggg', 2),
             ('ggaggaggagg', 2),
