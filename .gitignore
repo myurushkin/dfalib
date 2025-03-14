@@ -8,6 +8,8 @@ CTestTestfile.cmake
 *.user
 *.cbp
 *.a
+.ipynb_checkpoints
+src/dfalib.egg*
 build-*
 *.pyc
 venv
