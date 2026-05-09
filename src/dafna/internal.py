@@ -70,6 +70,20 @@ def dafna_intersect_automata(first, second):
     return fun(first, second)
 
 
+def dafna_intersect_automata_lazy(first, second):
+    fun = dafnalib.dafna_intersect_automata_lazy
+    fun.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    fun.restype = ctypes.c_void_p
+    return fun(first, second)
+
+
+def dafna_min_strings_iterator_create_n_first(obj, n_limit):
+    fun = dafnalib.dafna_min_strings_iterator_create_n_first
+    fun.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    fun.restype = ctypes.c_void_p
+    return fun(obj, n_limit)
+
+
 def dafna_create_automata(expr):
     fun = dafnalib.dafna_create_automata
     fun.argtypes = [ctypes.c_char_p]

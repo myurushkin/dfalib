@@ -60,11 +60,13 @@ private:
 
 Automata* sum_automata(const Automata* first_automata, const Automata* second_automata);
 Automata* intesect_automata(const Automata* first_automata, const Automata* second_automata);
+Automata* intersect_lazy(const Automata* first_automata, const Automata* second_automata);
 Automata* find_min_automata(const Automata* first_automata);
 bool check_eq(const Automata* automata_first_, const Automata* automata_second_);
 
 std::shared_ptr<Automata> sum_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata);
 std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata);
+std::shared_ptr<Automata> intersect_lazy(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata);
 std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& automata);
 bool check_eq(const std::shared_ptr<Automata>& automata_first_, const std::shared_ptr<Automata>& automata_second_);
 
@@ -72,6 +74,7 @@ void generate_automata_visualization_script(const Automata* automata, std::ostre
 void generate_automata_visualization_script(const Automata* automata, std::string filepath);
 
 void find_all_min_strings(const Automata* big, std::list<std::string>& min_strings);
+void find_all_min_strings(const Automata* big, std::list<std::string>& min_strings, int n_limit);
 
 
 #endif

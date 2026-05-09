@@ -5,6 +5,7 @@
 #include <stack>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <limits>
 #include <algorithm>
 
@@ -262,6 +263,69 @@ void intesect_automata(const Automata& first_automata, const Automata& second_au
 			}
 		}
 	}
+}
+
+void intersect_lazy(const Automata& first_automata, const Automata& second_automata, Automata& new_automata) {
+    new_automata.l_value = std::max(first_automata.l_value, second_automata.l_value);
+    const long long n2 = static_cast<long long>(second_automata.state_count());
+
+    std::unordered_map<long long, int> pair_id;
+    std::vector<std::pair<int, int>> id_to_pair;
+
+    auto encode = [n2](int i, int j) -> long long {
+        return static_cast<long long>(i) * n2 + j;
+    };
+
+    pair_id[encode(0, 0)] = 0;
+    id_to_pair.emplace_back(0, 0);
+
+    std::vector<std::vector<int>> transitions_per_state;
+    std::queue<int> bfs_queue;
+    bfs_queue.push(0);
+
+    while (!bfs_queue.empty()) {
+        int current_id = bfs_queue.front();
+        bfs_queue.pop();
+        int i = id_to_pair[current_id].first;
+        int j = id_to_pair[current_id].second;
+
+        std::vector<int> outgoing(new_automata.l_value, 0);
+        for (int k = 0; k < new_automata.l_value; ++k) {
+            int s_first = first_automata.get_to_state(i, k);
+            int s_second = second_automata.get_to_state(j, k);
+            long long key = encode(s_first, s_second);
+            auto it = pair_id.find(key);
+            int next_id;
+            if (it == pair_id.end()) {
+                next_id = static_cast<int>(pair_id.size());
+                pair_id.emplace(key, next_id);
+                id_to_pair.emplace_back(s_first, s_second);
+                bfs_queue.push(next_id);
+            } else {
+                next_id = it->second;
+            }
+            outgoing[k] = next_id;
+        }
+        if (current_id >= static_cast<int>(transitions_per_state.size())) {
+            transitions_per_state.resize(current_id + 1);
+        }
+        transitions_per_state[current_id] = std::move(outgoing);
+    }
+
+    new_automata.n_value = static_cast<int>(pair_id.size());
+    new_automata.init();
+
+    for (int id = 0; id < new_automata.n_value; ++id) {
+        int i = id_to_pair[id].first;
+        int j = id_to_pair[id].second;
+        if (first_automata.is_terminal(i) && second_automata.is_terminal(j)) {
+            new_automata.terminal_states.insert(id);
+        }
+        const auto& outgoing = transitions_per_state[id];
+        for (int k = 0; k < new_automata.l_value; ++k) {
+            new_automata.set_transition(id, k, outgoing[k]);
+        }
+    }
 }
 
 void build_minimum_equivalent_automata(const Automata& automata, Automata& new_automata) {
@@ -527,6 +591,11 @@ Automata* intesect_automata(const Automata* first_automata, const Automata* seco
     intesect_automata(*first_automata, *second_automata, *result);
     return result;
 }
+Automata* intersect_lazy(const Automata* first_automata, const Automata* second_automata) {
+    Automata* result = new Automata();
+    intersect_lazy(*first_automata, *second_automata, *result);
+    return result;
+}
 Automata* find_min_automata(const Automata* first_automata) {
     Automata* result = new Automata();
     find_min_automata(*first_automata, *result);
@@ -546,6 +615,12 @@ std::shared_ptr<Automata> intesect_automata(const std::shared_ptr<Automata>& fir
 {
 	Automata* result = new Automata();
 	intesect_automata(*first_automata.get(), *second_automata.get(), *result);
+    return std::make_shared<Automata>(*result);
+}
+std::shared_ptr<Automata> intersect_lazy(const std::shared_ptr<Automata>& first_automata, std::shared_ptr<Automata>& second_automata)
+{
+    Automata* result = new Automata();
+    intersect_lazy(*first_automata.get(), *second_automata.get(), *result);
     return std::make_shared<Automata>(*result);
 }
 std::shared_ptr<Automata> find_min_automata(const std::shared_ptr<Automata>& automata)
@@ -635,7 +710,45 @@ void find_all_min_strings(const Automata* big, std::vector<int>& min_paths, int 
     }
 }
 
-void find_all_min_strings(const Automata* big, std::list<string>& min_strings) {
+static void find_all_min_strings_limited(const Automata* big, std::vector<int>& min_paths, int currentNode, list<string>& result, int n_limit) {
+    result.clear();
+    if (min_paths[currentNode] == 0) {
+        result.push_back("");
+        return;
+    }
+    for (int prevNode = 0; prevNode < big->state_count(); ++prevNode) {
+        if (n_limit > 0 && (int)result.size() >= n_limit) {
+            break;
+        }
+        if (min_paths[prevNode] != min_paths[currentNode] - 1) {
+            continue;
+        }
+
+        std::list<int> symbols;
+        for (int i = 0; i < 4; ++i) {
+            if (big->get_to_state(prevNode, i) == currentNode) {
+                symbols.push_back(i);
+            }
+        }
+
+        list<string> subresult;
+        if (symbols.empty() == true) {
+            continue;
+        }
+
+        find_all_min_strings_limited(big, min_paths, prevNode, subresult, n_limit);
+        for (auto symb : symbols) {
+            for (auto res : subresult) {
+                result.push_back(res.append(1, nsymb2symb['a' + symb]));
+                if (n_limit > 0 && (int)result.size() >= n_limit) {
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void find_all_min_strings(const Automata* big, std::list<string>& min_strings, int n_limit) {
     min_strings.clear();
     std::vector<int> min_paths(big->state_count(), std::numeric_limits<int>::max());
     min_paths[0] = 0;
@@ -663,7 +776,11 @@ void find_all_min_strings(const Automata* big, std::list<string>& min_strings) {
             continue;
 
         list<string> subresult;
-        find_all_min_strings(big, min_paths, i, subresult);
+        if (n_limit > 0) {
+            find_all_min_strings_limited(big, min_paths, i, subresult, n_limit);
+        } else {
+            find_all_min_strings(big, min_paths, i, subresult);
+        }
 
         if (subresult.empty() == false) {
             if (min_strings.empty() == false) {
@@ -675,7 +792,17 @@ void find_all_min_strings(const Automata* big, std::list<string>& min_strings) {
                     min_strings.clear();
             }
             min_strings.insert(min_strings.end(), subresult.begin(), subresult.end());
+
+            if (n_limit > 0 && (int)min_strings.size() >= n_limit) {
+                auto it = min_strings.begin();
+                std::advance(it, n_limit);
+                min_strings.erase(it, min_strings.end());
+                break;
+            }
         }
     }
+}
 
+void find_all_min_strings(const Automata* big, std::list<string>& min_strings) {
+    find_all_min_strings(big, min_strings, -1);
 }

@@ -34,6 +34,9 @@ Automata* dafna_sum_automata(const Automata* first_automata, const Automata* sec
 Automata* dafna_intersect_automata(const Automata* first_automata, const Automata* second_automata) {
     return intesect_automata(first_automata, second_automata);
 }
+Automata* dafna_intersect_automata_lazy(const Automata* first_automata, const Automata* second_automata) {
+    return intersect_lazy(first_automata, second_automata);
+}
 Automata* dafna_find_min_automata(const Automata* first_automata) {
     return find_min_automata(first_automata);
 }
@@ -51,6 +54,14 @@ MinStringsIterator* dafna_min_strings_iterator_create(const Automata* automata) 
     MinStringsIterator* it = new MinStringsIterator;
 
     find_all_min_strings(automata, it->values);
+    it->it = it->values.begin();
+    return it;
+}
+
+MinStringsIterator* dafna_min_strings_iterator_create_n_first(const Automata* automata, int n_limit) {
+    MinStringsIterator* it = new MinStringsIterator;
+
+    find_all_min_strings(automata, it->values, n_limit);
     it->it = it->values.begin();
     return it;
 }

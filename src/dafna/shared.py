@@ -54,14 +54,24 @@ class Automata:
         dafna_delete_automata(tmp)
         return self
 
+    def intersect_lazy(self, second):
+        assert self.ctx == second.ctx
+        tmp = self.obj
+        self.obj = dafna_intersect_automata_lazy(self.obj, second.obj)
+        dafna_delete_automata(tmp)
+        return self
+
     def minimize(self):
         tmp = self.obj
         self.obj = dafna_find_min_automata(self.obj)
         dafna_delete_automata(tmp)
         return self
 
-    def min_strings(self):
-        it = dafna_min_strings_iterator_create(self.obj)
+    def min_strings(self, n_limit=None):
+        if n_limit is None:
+            it = dafna_min_strings_iterator_create(self.obj)
+        else:
+            it = dafna_min_strings_iterator_create_n_first(self.obj, int(n_limit))
         while dafna_min_strings_iterator_at_end(it) == False:
             next_value = dafna_min_strings_iterator_value(it)
             yield next_value.decode('utf-8')
@@ -87,16 +97,22 @@ def psum(*arg):
     return result
 
 
-def pintersect(*arg):
+def pintersect(*arg, lazy=False):
+    def _combine(acc, it):
+        if acc is None:
+            return it.minimize()
+        if lazy:
+            return acc.intersect_lazy(it).minimize()
+        return acc.intersect(it).minimize()
+
     result = None
     for item in arg:
         if type(item) is list:
             for it in item:
-                result = (result.intersect(it) if result != None else it).minimize()
+                result = _combine(result, it)
             continue
         assert type(item) is Automata
-        it = item
-        result = (result.intersect(it) if result != None else it).minimize()
+        result = _combine(result, item)
     return result
 
 
