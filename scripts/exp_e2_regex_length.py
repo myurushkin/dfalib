@@ -2,55 +2,23 @@
 Experiment E2: Scaling by regex length (L).
 
 Builds a single pattern of form X* (a|c|g|t)^L X*, minimizes it, and records
-time, peak RSS delta, and state count.
+time, peak RSS, and state count.
 
-Output CSV columns: regex_length, time_s, peak_rss_kb_delta, states_final
+Output CSV columns: regex_length, time_s, peak_rss_kb, states_final
 """
 
 import sys
 import pathlib
 import argparse
 import csv
-import time
-import gc
-import resource
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]  # dfalib/
 sys.path.insert(0, str(ROOT / "src"))
 
-from dafna.shared import Context
+from _bench_subprocess import run_bench
 
 EXPERIMENTS_DIR = ROOT / "experiments"
 DEFAULT_OUTPUT = EXPERIMENTS_DIR / "e2.csv"
-
-
-def measure_length(L):
-    """Build and minimize pattern of length L. Returns (time_s, rss_delta_kb, states)."""
-    gc.collect()
-    ctx = Context()
-    ctx.create_pattern("a|c|g|t", simple=True, name="X")
-
-    # Build: X* followed by (a|c|g|t) repeated L times, then X*
-    repeated = "(a|c|g|t)" * L
-    regex = "X*" + repeated + "X*"
-
-    rss_before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    t0 = time.perf_counter()
-
-    automaton = ctx.create_pattern(regex)
-    automaton.minimize()
-
-    t1 = time.perf_counter()
-    rss_after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-
-    states = automaton.state_count()
-    elapsed = t1 - t0
-    rss_delta = rss_after - rss_before
-
-    del automaton, ctx
-    gc.collect()
-
-    return elapsed, rss_delta, states
 
 
 def main():
@@ -74,13 +42,20 @@ def main():
     rows = []
     for L in lengths:
         print(f"  L={L} ...", end=" ", flush=True)
-        time_s, rss_delta, states = measure_length(L)
-        print(f"time={time_s:.3f}s  rss_delta={rss_delta}KB  states={states}")
+        try:
+            data = run_bench("--exp", "e2", "--L", str(L))
+            time_s = data["time_s"]
+            rss = data["peak_rss_kb"]
+            states = data["states_final"]
+            print(f"time={time_s:.3f}s  peak_rss={rss}KB  states={states}")
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}")
+            time_s, rss, states = -1, -1, -1
         rows.append({"regex_length": L, "time_s": round(time_s, 6),
-                     "peak_rss_kb_delta": rss_delta, "states_final": states})
+                     "peak_rss_kb": rss, "states_final": states})
 
     with open(args.output, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["regex_length", "time_s", "peak_rss_kb_delta", "states_final"])
+        writer = csv.DictWriter(f, fieldnames=["regex_length", "time_s", "peak_rss_kb", "states_final"])
         writer.writeheader()
         writer.writerows(rows)
 

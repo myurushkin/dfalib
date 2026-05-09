@@ -51,7 +51,7 @@ def savefig(fig, path):
 def plot_e1(rows):
     ks = [int(r["k"]) for r in rows]
     times = [float(r["time_s"]) for r in rows]
-    rss = [float(r["peak_rss_kb_delta"]) for r in rows]
+    rss = [float(r["peak_rss_kb"]) for r in rows]
 
     # Time plot
     fig, ax = plt.subplots()
@@ -73,7 +73,7 @@ def plot_e1(rows):
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel("Число шаблонов k")
-    ax.set_ylabel("Прирост RSS (КБ)")
+    ax.set_ylabel("Пик RSS дочернего процесса (КБ)")
     ax.set_title("Эксперимент E1: масштабирование по числу шаблонов\n(память)")
     ax.xaxis.set_major_formatter(ticker.ScalarFormatter())
     ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
@@ -127,10 +127,10 @@ def plot_e4(rows):
         for r in rows:
             if int(r["k"]) == k and r["mode"] == "eager":
                 eager_states.append(float(r["states_raw"]))
-                eager_mem.append(max(float(r["peak_rss_kb_delta"]), 1))
+                eager_mem.append(max(float(r["peak_rss_kb"]), 1))
             if int(r["k"]) == k and r["mode"] == "lazy":
                 lazy_states.append(float(r["states_raw"]))
-                lazy_mem.append(max(float(r["peak_rss_kb_delta"]), 1))
+                lazy_mem.append(max(float(r["peak_rss_kb"]), 1))
 
     x = np.arange(len(ks))
     width = 0.35
@@ -154,8 +154,8 @@ def plot_e4(rows):
     ax.set_xticks(x)
     ax.set_xticklabels([str(k) for k in ks])
     ax.set_xlabel("Длина шаблона k")
-    ax.set_ylabel("Прирост RSS (КБ)")
-    ax.set_title("Прирост памяти")
+    ax.set_ylabel("Пик RSS дочернего процесса (КБ)")
+    ax.set_title("Пик памяти дочернего процесса")
     ax.legend()
 
     fig.suptitle("Эксперимент E4: ленивое vs полное пересечение (без минимизации)", fontsize=12)

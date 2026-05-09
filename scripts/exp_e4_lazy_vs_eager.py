@@ -1,78 +1,29 @@
 """
 Experiment E4: Lazy vs eager intersection, scaling by k.
 
-Uses the same pattern set as E1 (alternating GQD/IMT).
-For each k, measures both eager (lazy=False) and lazy (lazy=True) pintersect.
+Uses a contrast pair: p1 = (a|c|g|t)^k (exact-length-k strings, k+1 states)
+and p2 = X*g^k X* (contains k consecutive 'g', k+1 states). Their intersection
+has exactly one minimal string g^k.
 
-Output CSV columns: k, mode (eager/lazy), time_s, peak_rss_kb_delta, states_final
+Performs raw intersection WITHOUT minimize so that state_count reflects the
+intermediate automaton size: eager builds the full Cartesian product ~(k+1)^2
+states; lazy only follows reachable transitions, staying O(k).
+
+Output CSV columns: k, mode (eager/lazy), time_s, peak_rss_kb, states_raw
 """
 
 import sys
 import pathlib
 import argparse
 import csv
-import time
-import gc
-import resource
-import itertools
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]  # dfalib/
 sys.path.insert(0, str(ROOT / "src"))
 
-from dafna.shared import Context
+from _bench_subprocess import run_bench
 
 EXPERIMENTS_DIR = ROOT / "experiments"
 DEFAULT_OUTPUT = EXPERIMENTS_DIR / "e4.csv"
-
-
-def build_pair(ctx, k):
-    """Build a contrast pair: exact-length-k string vs substring-of-g^k.
-
-    p_len(a|c|g|t)^k accepts every string of length exactly k (4^k minimal strings)
-    and has k+1 states. p_g X*g^kX* accepts strings containing k consecutive 'g'
-    and has k+1 states. Their intersection has exactly one minimal string g^k.
-
-    Eager intersection materializes the full Cartesian product (≈(k+1)^2 states).
-    Lazy intersection only follows reachable transitions and stays O(k+1).
-    """
-    p_len = ctx.create_pattern("(a|c|g|t)" * k)
-    p_g = ctx.create_pattern("X*" + "g" * k + "X*")
-    return [p_len, p_g]
-
-
-def measure_k_mode(k, lazy):
-    """One raw intersection (NO minimize) at given k. Returns (time_s, rss_delta_kb, states_raw).
-
-    We deliberately skip minimize so that state_count reflects the *intermediate*
-    automaton — eager builds the full Cartesian product, lazy only the reachable
-    subset. After minimize both collapse to the same minimal DFA, hiding the
-    contrast.
-    """
-    gc.collect()
-    ctx = Context()
-    ctx.create_pattern("a|c|g|t", simple=True, name="X")
-
-    p1, p2 = build_pair(ctx, k)
-
-    rss_before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    t0 = time.perf_counter()
-
-    if lazy:
-        result = p1.intersect_lazy(p2)
-    else:
-        result = p1.intersect(p2)
-
-    t1 = time.perf_counter()
-    rss_after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-
-    states_raw = result.state_count()
-    elapsed = t1 - t0
-    rss_delta = rss_after - rss_before
-
-    del result, ctx
-    gc.collect()
-
-    return elapsed, rss_delta, states_raw
 
 
 def main():
@@ -93,20 +44,27 @@ def main():
 
     rows = []
     for k in k_values:
-        for lazy, mode_name in [(False, "eager"), (True, "lazy")]:
+        for mode_name in ["eager", "lazy"]:
             print(f"  k={k}  mode={mode_name} ...", end=" ", flush=True)
-            time_s, rss_delta, states = measure_k_mode(k, lazy)
-            print(f"time={time_s:.4f}s  rss_delta={rss_delta}KB  states={states}")
+            try:
+                data = run_bench("--exp", "e4", "--k", str(k), "--mode", mode_name)
+                time_s = data["time_s"]
+                rss = data["peak_rss_kb"]
+                states = data["states_raw"]
+                print(f"time={time_s:.4f}s  peak_rss={rss}KB  states={states}")
+            except RuntimeError as exc:
+                print(f"ERROR: {exc}")
+                time_s, rss, states = -1, -1, -1
             rows.append({
                 "k": k,
                 "mode": mode_name,
                 "time_s": round(time_s, 6),
-                "peak_rss_kb_delta": rss_delta,
+                "peak_rss_kb": rss,
                 "states_raw": states,
             })
 
     with open(args.output, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["k", "mode", "time_s", "peak_rss_kb_delta", "states_raw"])
+        writer = csv.DictWriter(f, fieldnames=["k", "mode", "time_s", "peak_rss_kb", "states_raw"])
         writer.writeheader()
         writer.writerows(rows)
 

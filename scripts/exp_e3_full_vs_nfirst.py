@@ -23,10 +23,10 @@ from dafna.shared import Context
 EXPERIMENTS_DIR = ROOT / "experiments"
 DEFAULT_OUTPUT = EXPERIMENTS_DIR / "e3.csv"
 
-STRING_LENGTH = 6  # 4^6 = 4096 minimal strings of length 6
+DEFAULT_STRING_LENGTH = 6  # 4^6 = 4096 minimal strings of length 6
 
 
-def build_automaton():
+def build_automaton(length):
     """Build automaton accepting all strings of fixed length over the DNA alphabet.
 
     Pattern (a|c|g|t)^L gives 4^L minimal strings of length L. With L=6 this
@@ -34,7 +34,7 @@ def build_automaton():
     from N-first with N in {10, 100, 1000}.
     """
     ctx = Context()
-    pattern_str = "(a|c|g|t)" * STRING_LENGTH
+    pattern_str = "(a|c|g|t)" * length
     return ctx.create_pattern(pattern_str)
 
 
@@ -51,6 +51,8 @@ def main():
     parser = argparse.ArgumentParser(description="Experiment E3: full vs N-first min_strings")
     parser.add_argument("--limits", type=str, default="None,10,100,1000",
                         help="Comma-separated n_limit values; use 'None' for full (default: None,10,100,1000)")
+    parser.add_argument("--length", type=int, default=DEFAULT_STRING_LENGTH,
+                        help=f"String length L for pattern (a|c|g|t)^L (default {DEFAULT_STRING_LENGTH})")
     parser.add_argument("--output", type=pathlib.Path, default=DEFAULT_OUTPUT,
                         help="Output CSV path")
     parser.add_argument("--quick", action="store_true",
@@ -72,7 +74,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     print("Building automaton...", flush=True)
-    automaton = build_automaton()
+    automaton = build_automaton(args.length)
     print(f"  state_count={automaton.state_count()}")
 
     rows = []

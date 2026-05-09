@@ -4,74 +4,21 @@ Experiment E1: Scaling by number of patterns (k).
 Measures time and memory for pintersect of k patterns (eager, minimized).
 Does NOT call min_strings — construction cost only.
 
-Output CSV columns: k, time_s, peak_rss_kb_delta, states_final
+Output CSV columns: k, time_s, peak_rss_kb, states_final
 """
 
 import sys
 import pathlib
 import argparse
 import csv
-import time
-import gc
-import resource
-import itertools
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]  # dfalib/
 sys.path.insert(0, str(ROOT / "src"))
 
-from dafna.shared import Context, pintersect, createGQD, createIMT, createHRP
+from _bench_subprocess import run_bench
 
 EXPERIMENTS_DIR = ROOT / "experiments"
 DEFAULT_OUTPUT = EXPERIMENTS_DIR / "e1.csv"
-
-# 16 unique pattern configurations across three families to avoid saturation.
-PATTERN_CONFIGS = [
-    ("GQD", 2), ("IMT", (2, 1)), ("HRP", {'a': 2, 't': 1, 'g': 1, 'c': 1}),
-    ("GQD", 3), ("IMT", (3, 2)), ("HRP", {'a': 1, 't': 2, 'g': 1, 'c': 1}),
-    ("GQD", 4), ("IMT", (4, 3)), ("HRP", {'a': 1, 't': 1, 'g': 2, 'c': 1}),
-    ("GQD", 5), ("IMT", (2, 2)), ("HRP", {'a': 1, 't': 1, 'g': 1, 'c': 2}),
-    ("GQD", 6), ("IMT", (3, 3)), ("IMT", (4, 4)), ("IMT", (5, 5)),
-]
-
-
-def build_patterns(k, ctx):
-    """Build k unique patterns from PATTERN_CONFIGS."""
-    patterns = []
-    for kind, arg in PATTERN_CONFIGS[:k]:
-        if kind == "GQD":
-            patterns.append(createGQD(arg, ctx))
-        elif kind == "IMT":
-            a, b = arg
-            patterns.append(createIMT(a, b, ctx))
-        elif kind == "HRP":
-            patterns.append(createHRP(arg, ctx))
-    return patterns
-
-
-def measure_k(k):
-    """Run one measurement for k patterns. Returns (time_s, rss_delta_kb, states)."""
-    gc.collect()
-    ctx = Context()
-    ctx.create_pattern("a|c|g|t", simple=True, name="X")
-
-    patterns = build_patterns(k, ctx)
-
-    rss_before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    t0 = time.perf_counter()
-
-    result = pintersect(patterns, lazy=False)
-
-    t1 = time.perf_counter()
-    rss_after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-
-    states = result.state_count()
-    elapsed = t1 - t0
-    rss_delta = rss_after - rss_before
-
-    del result, patterns, ctx
-    gc.collect()
-
-    return elapsed, rss_delta, states
 
 
 def main():
@@ -94,13 +41,20 @@ def main():
     rows = []
     for k in k_values:
         print(f"  k={k} ...", end=" ", flush=True)
-        time_s, rss_delta, states = measure_k(k)
-        print(f"time={time_s:.3f}s  rss_delta={rss_delta}KB  states={states}")
+        try:
+            data = run_bench("--exp", "e1", "--k", str(k))
+            time_s = data["time_s"]
+            rss = data["peak_rss_kb"]
+            states = data["states_final"]
+            print(f"time={time_s:.3f}s  peak_rss={rss}KB  states={states}")
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}")
+            time_s, rss, states = -1, -1, -1
         rows.append({"k": k, "time_s": round(time_s, 6),
-                     "peak_rss_kb_delta": rss_delta, "states_final": states})
+                     "peak_rss_kb": rss, "states_final": states})
 
     with open(args.output, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["k", "time_s", "peak_rss_kb_delta", "states_final"])
+        writer = csv.DictWriter(f, fieldnames=["k", "time_s", "peak_rss_kb", "states_final"])
         writer.writeheader()
         writer.writerows(rows)
 
