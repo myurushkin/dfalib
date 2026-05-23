@@ -1,0 +1,19 @@
+Biocase: DNA hairpin with GC-window [0.4, 0.6]
+Parameters:
+  alpha=0.4, beta=0.6, length_cap=60
+  stem_lengths=[4, 5, 6], loop_lengths=[4, 5, 6, 7]
+DFA states: 63
+DFA build time: 2.44 ms
+Search time:    0.08 ms
+
+Result:    acgtaaagacgt
+Length:    12 nt
+Structure: stem='acgt'  loop='aaag'  rc='acgt'
+GC (whole string): 0.417  (in [0.4,0.6]: YES)
+GC (loop):         0.250
+Hairpin strength:  4
+
+Interpretation:
+  The returned sequence forms a hairpin with complementary stem arms.
+  The GC-window constraint is satisfied over the full sequence.
+  Hairpin strength >= stem_len confirms correct base-pair complementarity.

@@ -1,0 +1,20 @@
+Biocase: PCR primer design with GC-window [0.4, 0.6]
+Parameters:
+  primer_length=18 nt, alpha=0.4, beta=0.6
+  length_cap=30, max_hairpin_allowed=4
+DFA states: 74
+DFA build time: 0.61 ms
+Search time:    0.13 ms
+
+Result:          aaaaaaaaaagggggggg
+Length:          18 nt  (in [18,25]: YES)
+GC count:        8 / 18
+GC fraction:     0.444  (in [0.4,0.6]: YES)
+Hairpin strength:0  (<= 4: YES)
+
+Primer quality check: PASS
+
+Interpretation:
+  The returned sequence satisfies the GC-content constraint [0.4, 0.6]
+  required for stable primer annealing, and has low self-complementarity
+  (hairpin strength <= 4), making it a viable PCR primer candidate.

@@ -1,0 +1,4 @@
+biocase,time_dfa_build_ms,time_dfa_build_std_ms,time_find_ms,time_find_std_ms,n_states,returned_string_length
+hairpin,2.3383,0.3813,0.0864,0.0246,63,12
+primer,0.5306,0.0948,0.1104,0.0145,74,18
+gqd,0.9815,0.1655,0.0816,0.023,41,15

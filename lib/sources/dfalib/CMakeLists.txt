@@ -13,7 +13,8 @@ set(HEADERS
 
 
 set (SOURCES
-        dfa.cpp)
+        dfa.cpp
+        dfa_window.cpp)
 
 include_directories(../../include/)
 add_library(dfalib STATIC ${SOURCES} ${HEADERS})

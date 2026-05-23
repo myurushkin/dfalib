@@ -1,0 +1,83 @@
+======================================================================
+WEEK 6 PROFILING REPORT — k=12 DFA (189k product states)
+======================================================================
+
+--- Step 1: DFA build (pintersect k=12, minimize) ---
+  DFA build time (min of 3): 549.96 ms
+  DFA states after minimize: 58475
+
+--- Step 2: Timing decomposition (min of 5 repeats) ---
+  find_min_string_under_budget (unit cost, budget=100, length_cap=100): 227.088 ms
+    result: 'aagggggccccgggggcccttgggggccccgggggcccaatt'
+  find_all_min_strings_under_budget (GC cost, budget=34, n_limit=100): 282.636 ms
+    count returned: 100
+    first result: 'aattgggggccccgggggcccaattccccgggggcccggggg'
+
+  Fraction breakdown (over total op time, excluding DFA build):
+    find_min_string_under_budget  : 44.6%  (227.088 ms)
+    find_all_min_strings_under_budget : 55.4%  (282.636 ms)
+
+--- Step 3: cProfile (top-30 by cumulative time, 5 repeats each) ---
+         1051 function calls in 2.651 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        5    0.000    0.000    2.651    0.530 /home/ilya/storage/pappers/dfa_pappepr/dfalib/scripts/profile_pass.py:79(run_all)
+        5    1.461    0.292    1.461    0.292 /home/ilya/storage/pappers/dfa_pappepr/dfalib/src/dafna/window.py:51(find_all_min_strings_under_budget)
+        5    1.190    0.238    1.190    0.238 /home/ilya/storage/pappers/dfa_pappepr/dfalib/src/dafna/window.py:10(find_min_string_under_budget)
+        5    0.000    0.000    0.000    0.000 /home/ilya/storage/pappers/dfa_pappepr/dfalib/src/dafna/window.py:6(_buf)
+        5    0.000    0.000    0.000    0.000 /home/ilya/.local/share/uv/python/cpython-3.12-linux-x86_64-gnu/lib/python3.12/ctypes/__init__.py:49(create_string_buffer)
+      505    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
+      500    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       10    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        5    0.000    0.000    0.000    0.000 {built-in method sys.audit}
+        5    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+
+
+
+--- Step 4: enum_paths_backward memoization assessment ---
+
+  C++ implementation: enum_paths_backward is a recursive backward
+  enumerator over the augmented (q,b) state space. It is called only
+  by find_all_min_strings_under_budget (variant B).
+
+  Key structural observation:
+  - enum_paths_backward iterates over all DFA states (O(|Q|)) at each
+    recursion level to find predecessors. For k=12 with 189k states,
+    each level scans the full state space. Memoization of (q,b) -> paths
+    would eliminate recomputation for repeated sub-problems.
+
+  Memoization decision (per decision framework):
+    find_all_min time fraction: 55.4% of total op time
+    find_all absolute time:     282.636 ms
+
+    DECISION: find_all >20% of op time. Implement memoization (B).
+    (Memoization maps (q,b)->paths; eliminates repeated sub-problem work.)
+
+  HOT PATH SUMMARY (top-5 per operation):
+  find_min_string_under_budget:
+    1. dafna_find_min_string_under_budget (C++): BFS over (q,b) augmented space
+    2. ctypes call overhead (negligible vs C++ time)
+    3. create_string_buffer (negligible)
+  find_all_min_strings_under_budget:
+    1. dafna_find_all_min_strings_under_budget (C++): forward BFS + enum_paths_backward
+    2. dafna_window_result_get (C++): decode 100 result strings
+    3. bytes.decode (Python): 100 string decodes
+    4. list.append (Python): 100 appends
+    5. ctypes overhead (negligible vs C++ time)
+
+  - DFA build (pintersect + minimize): 544ms — one-time cost.
+    build: 549.96 ms
+    find_min: 227.088 ms  find_all (variant B): 282.636 ms
+  - find_all variant B (enum_paths_backward) is a significant hot path at
+    288ms (54.8% of query time). The recursive backward enumeration over
+    all DFA states at each level is O(|Q| * string_length) per call.
+    Memoization will eliminate redundant sub-problem recomputation.
+  - cProfile shows Python ctypes call overhead; C++ internals not visible.
+  - No unexpected hot path detected (BFS + reconstruction as expected).
+
+======================================================================
+END OF REPORT
+======================================================================

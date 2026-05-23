@@ -1,0 +1,21 @@
+Biocase: GQD canonical with GC-window [0.5, 0.8]
+Parameters:
+  strength=3, alpha=0.5, beta=0.8, length_cap=80
+DFA states: 41
+DFA build time: 1.88 ms
+Search time:    0.24 ms
+
+Result:       gggagggagggaggg
+Length:       15 nt
+GC count:     12 / 15
+GC fraction:  0.800  (in [0.5,0.8]: YES)
+G-runs (>=3): 4  (>= 4: YES)
+
+GQD quality check: PASS
+
+Interpretation:
+  The returned sequence satisfies the GC-content window [0.5, 0.8]
+  and contains 4 G-runs of length >= 3, forming a
+  canonical G-quadruplex motif. This demonstrates that dafna can find
+  GC-constrained G4 motifs with a single BFS pass over the augmented
+  (q, b) state space.
