@@ -35,7 +35,3 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "dafna.lib" = ["*.so", "*.dll"]
-
-[tool.rye]
-managed = true
-dev-dependencies = []
