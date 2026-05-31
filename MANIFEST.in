@@ -3,12 +3,10 @@ include LICENSE
 include MANIFEST.in
 include pyproject.toml
 include README.md
-include setup.cfg
 include setup.py
 
 recursive-include src/dafna *
 recursive-include lib *
-global-exclude
 
 prune */__pycache__
 global-exclude *.pyc *.pyo *.pyd *.swp *.bak *~ *.user

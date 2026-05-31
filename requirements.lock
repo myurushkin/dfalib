@@ -11,12 +11,12 @@
 
 -e file:.
 graphviz==0.20.3
-    # via dfalib
+    # via dafna
 numpy==2.2.3
-    # via dfalib
+    # via dafna
 regex==2024.11.6
-    # via dfalib
+    # via dafna
 rstr==3.2.2
-    # via dfalib
+    # via dafna
 tqdm==4.67.1
-    # via dfalib
+    # via dafna

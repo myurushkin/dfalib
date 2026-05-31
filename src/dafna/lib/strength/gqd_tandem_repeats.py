@@ -38,7 +38,7 @@ def psa(pattern: str, nuclString: str):
     flag = False
     while not flag:
         i += 1
-        rl = re.compile(pattern.replace('x', '\w') * i)
+        rl = re.compile(pattern.replace('x', r'\w') * i)
         if rl.findall(nuclString):
             i += 1
         else:
@@ -56,7 +56,7 @@ def analgc(input_string: str, templateArray: [str]):
 
     if not re.search('[act]{2,}', input_string[lowQ:highQ]):
         for l in templateArray:
-            rl = re.compile(l.replace('x', '\w') * 4)
+            rl = re.compile(l.replace('x', r'\w') * 4)
             nsForce = l.count('g')
             if nsForce > maxForce and rl.findall(input_string):
                 maxForce = nsForce

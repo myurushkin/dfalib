@@ -9,10 +9,11 @@ CTestTestfile.cmake
 *.cbp
 *.a
 .ipynb_checkpoints
-src/dfalib.egg*
+src/dafna.egg*
 build-*
 *.pyc
 venv
+.venv
 build/
 .idea
 *.dll

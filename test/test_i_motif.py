@@ -1,6 +1,6 @@
 import unittest
 import rstr
-import src.dafna.lib.strength.strength as strength
+from dafna.lib.strength import strength
 
 
 class TestIMotif(unittest.TestCase):

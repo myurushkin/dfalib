@@ -7,39 +7,6 @@ from dafna.lib.strength import hairpin
 from collections import defaultdict
 import json
 
-import json
-from random import random
-
-import networkx as nx
-import matplotlib.pyplot as plt
-
-
-def draw(n : dict):
-    g = nx.PlanarEmbedding()
-    g.set_data(n)
-    pos = nx.planar_layout(g)  # here are your positions.
-    # pos = nx.spring_layout(g, pos=pos, seed=int(2**32 - 1 * random()))
-    nx.draw_networkx(g, pos, with_labels=True)
-    plt.show()
-
-
-def print_pic(nucls, pic):
-    nodes = defaultdict(list)
-    def name(ind):
-        return f"{nucls[ind]}{ind}"
-
-    for i in range(len(nucls) - 1):
-        nodes[name(i)].append(name(i+1))
-
-    for i in range(1, len(nucls)):
-        nodes[name(i)].append(name(i-1))
-
-    for pair in pic:
-        nodes[name(pair[0])].append(name(pair[1]))
-        nodes[name(pair[1])].append(name(pair[0]))
-
-    draw(nodes)
-
 
 class TestHairpin(unittest.TestCase):
 

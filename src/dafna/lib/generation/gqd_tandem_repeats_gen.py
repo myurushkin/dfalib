@@ -1,11 +1,13 @@
+from dafna.lib.generation import preprocess_pattern
 from dafna.shared import Context
-
-def preporcess_pattern(pattern):
-    pattern = pattern.replace(" ", "")
-    return pattern
 
 
 def create(strength: int, ctx: Context):
-    result_pattern = "".join(["X*"] + ["gY"] * (4 * strength-1) + ["gX*"])
-    pattern = preporcess_pattern(result_pattern)
+    """Build a G-quadruplex tandem-repeat pattern of the given strength.
+
+    Requires the simple patterns ``X`` (= ``a|c|g|t``) and ``Y`` (= ``a|c|t``)
+    to be registered in ``ctx``.
+    """
+    result_pattern = "".join(["X*"] + ["gY"] * (4 * strength - 1) + ["gX*"])
+    pattern = preprocess_pattern(result_pattern)
     return [ctx.create_pattern(pattern)]

@@ -1,7 +1,7 @@
 import random
 import rstr
 from dafna.lib.strength import gqd_canonical, gqd_tandem_repeats
-from dafna.lib.generation import gqd_canonocal_gen, gqd_tandem_repeats_gen, i_motif_gen
+from dafna.lib.generation import gqd_canonical_gen, gqd_tandem_repeats_gen, i_motif_gen
 from dafna.shared import *
 from dataclasses import dataclass
 from typing import *
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     gqd_patterns = []
     for strength in [2, 3]:
-        gqd_patterns.extend(gqd_canonocal_gen.create(strength=strength, ctx=ctx))
+        gqd_patterns.extend(gqd_canonical_gen.create(strength=strength, ctx=ctx))
     
     string_size_pattern = ctx.create_pattern('X' * 20)
     

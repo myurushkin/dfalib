@@ -4,7 +4,7 @@ import rstr
 from dafna.lib.strength import strength
 from dafna.lib.strength import gqd_canonical
 from dafna.lib.strength import gqd_tandem_repeats
-from dafna.lib.generation import gqd_canonocal_gen
+from dafna.lib.generation import gqd_canonical_gen
 from dafna.lib.generation import gqd_tandem_repeats_gen
 from dafna.shared import *
 
@@ -16,7 +16,7 @@ class TestGeneratorGQD(unittest.TestCase):
             ctx = Context()
             X = ctx.create_pattern("a|c|g|t", simple=True, name="X")
             
-            patterns = gqd_canonocal_gen.create(input_strength, ctx, X)
+            patterns = gqd_canonical_gen.create(input_strength, ctx)
             result: Automata = pintersect(psum(patterns))
             
             for string in result.min_strings():
@@ -31,7 +31,7 @@ class TestGeneratorGQD(unittest.TestCase):
             Y = ctx.create_pattern("a|c|t", simple=True, name="Y")
             X = ctx.create_pattern("a|c|g|t", simple=True, name="X")
             
-            patterns = gqd_tandem_repeats_gen.create(input_strength, ctx, X)
+            patterns = gqd_tandem_repeats_gen.create(input_strength, ctx)
             result: Automata = pintersect(psum(patterns))
             
             for index, string in enumerate(result.min_strings()):

@@ -2,6 +2,7 @@ import uuid
 from dafna.internal import *
 from graphviz import Source
 from dafna.lib.strength.strength import *
+from dafna.lib.generation import preprocess_pattern
 
 class Context:
     def __init__(self):
@@ -83,7 +84,7 @@ def psum(*arg):
                 result = (result.add(it) if result != None else it).minimize()
             continue
         assert type(item) is Automata
-        result = (result.add(item) if result != None else it).minimize()
+        result = (result.add(item) if result != None else item).minimize()
     return result
 
 
@@ -101,23 +102,18 @@ def pintersect(*arg):
 
 
 
-def preporcess_pattern(pattern):
-    pattern = pattern.replace(" ", "")
-    return pattern
-
-
 # IMT = X* c{a} X{1}X* c{b} X{2}X* c{a} X{1}X* c{b} X*, a=[2:20], b=[1:20]
 def createIMT(a, b, ctx):
     c1 = 'c' * a
     c2 = 'c' * b
-    pattern = preporcess_pattern("X* {c1} X+ {c2} XX+ {c1} X+ {c2} X*".format(c1=c1, c2=c2))
+    pattern = preprocess_pattern("X* {c1} X+ {c2} XX+ {c1} X+ {c2} X*".format(c1=c1, c2=c2))
     #print(pattern)
     return ctx.create_pattern(pattern)
 
 
 def createGQD(m, ctx):
     ggg = 'g'*m
-    pattern = preporcess_pattern("X* {ggg} X+ {ggg} X+ {ggg} X+ {ggg} X*".format(ggg=ggg))
+    pattern = preprocess_pattern("X* {ggg} X+ {ggg} X+ {ggg} X+ {ggg} X*".format(ggg=ggg))
     return ctx.create_pattern(pattern)
 
 def createHRP(counts, ctx):
@@ -125,7 +121,7 @@ def createHRP(counts, ctx):
 
     values = [v * counts[v] for v in 'atgc']
     comp_values = [comp[v] * counts[v] for v in 'atgc']
-    pattern = preporcess_pattern('X*' + 'X*'.join(values) + 'XXXX*' + 'X*'.join(reversed(comp_values)) + 'X*')
+    pattern = preprocess_pattern('X*' + 'X*'.join(values) + 'XXXX*' + 'X*'.join(reversed(comp_values)) + 'X*')
     print(pattern)
     return ctx.create_pattern(pattern)
 
