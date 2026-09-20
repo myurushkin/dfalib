@@ -21,8 +21,12 @@ class TestIMotif(unittest.TestCase):
                          [strength.i_motif_max_strength(i_motif, True) for i_motif in
                           biological_significance_strings])
 
+        # 'cggcctcctcctcctcgg' holds four 'cc' blocks (offsets 3, 6, 9, 12)
+        # separated by single symbols, i.e. c{2}.+c{2}.+c{2}.+c{2} -> 2.0.
+        # The old regex checker was anchored to the leftmost match ('c' at
+        # offset 0) and reported 1.5.
         self.assertEqual(
-            [2, 3, 1.5, 2.5],
+            [2, 3, 2, 2.5],
             [
                 strength.i_motif_max_strength(i_motif) for i_motif in [
                     'cctttcctttcctttcc',

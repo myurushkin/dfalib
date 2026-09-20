@@ -33,7 +33,58 @@ def gqd_max_strength_naive(input_string):
 def gqd_max_strength(input_string):
     return max(gqd_canonical.gqd_max_strength(input_string), gqd_tandem_repeats.max_strength(input_string))
 
+_RC = {'a': 't', 't': 'a', 'g': 'c', 'c': 'g'}
+
+
+def _revcomp(s):
+    return "".join(_RC[ch] for ch in reversed(s))
+
+
+def _runs_from(s, chars):
+    """out[i] = length of the longest block of symbols from ``chars`` starting at i."""
+    out = [0] * (len(s) + 1)
+    for i in range(len(s) - 1, -1, -1):
+        out[i] = out[i + 1] + 1 if s[i] in chars else 0
+    return out
+
+
 def hairpin_max_strength(string):
+    """Max n + m over every placement of
+    [at]{n} .{0,3} [gc]{m} .{3,7} revcomp([gc]{m}) .{0,3} revcomp([at]{n}).
+
+    Exhaustive over start positions and block lengths; the previous regex
+    version (``hairpin_max_strength_legacy``) grabbed the gc block greedily
+    and missed stems embedded in longer gc runs.
+    """
+    s = string.lower()
+    L = len(s)
+    at = _runs_from(s, 'at')
+    gc = _runs_from(s, 'gc')
+    best = 0
+    for i in range(L):
+        for na in range(at[i], 0, -1):
+            u_rc = _revcomp(s[i:i + na])
+            for gap1 in range(4):
+                j = i + na + gap1
+                for ng in range(gc[j] if j < L else 0, 0, -1):
+                    if na + ng <= best:
+                        break
+                    v_rc = _revcomp(s[j:j + ng])
+                    for loop in range(3, 8):
+                        k = j + ng + loop
+                        if s[k:k + ng] != v_rc:
+                            continue
+                        for gap2 in range(4):
+                            p = k + ng + gap2
+                            if s[p:p + na] == u_rc:
+                                best = na + ng
+                                break
+                        if best == na + ng:
+                            break
+    return best
+
+
+def hairpin_max_strength_legacy(string):
     strength = 0
     n_count = '1,'
     m_count = '1,'
@@ -75,6 +126,48 @@ def hairpin_max_strength(string):
 
 
 def i_motif_max_strength(string, biological_significance: bool = False):
+    """Max (n + m) / 2 over every placement of  c{n} .+ c{m} .+ c{n} .+ c{m}.
+
+    Exhaustive over (n, m); each pair is decided by greedy earliest placement
+    of the four blocks, which is exact for a chain with minimum gaps.  The
+    previous regex version (``i_motif_max_strength_legacy``) was anchored to
+    the leftmost ``findall`` match and could report a weaker motif that
+    starts earlier.  ``biological_significance`` is accepted for API
+    compatibility; the legacy code ignored it too.
+    """
+    s = string.lower()
+    L = len(s)
+    c = _runs_from(s, 'c')
+
+    def first_block(start, k):
+        for i in range(start, L - k + 1):
+            if c[i] >= k:
+                return i
+        return -1
+
+    def feasible(n, m):
+        pos = 0
+        for k in (n, m, n, m):
+            i = first_block(pos, k)
+            if i < 0:
+                return False
+            pos = i + k + 1
+        return True
+
+    best = 0.0
+    for n in range(1, L // 2 + 1):
+        if not feasible(n, 1):
+            break
+        for m in range(L // 2, 0, -1):
+            if (n + m) / 2 <= best:
+                break
+            if feasible(n, m):
+                best = (n + m) / 2
+                break
+    return best
+
+
+def i_motif_max_strength_legacy(string, biological_significance: bool = False):
     x_group = '[a|c|g|t]'
     y_symbol = '[t|c]'
     n = '1,'

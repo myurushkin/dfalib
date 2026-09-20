@@ -1,0 +1,12 @@
+# a query touching every construct: regex, counting threshold,
+# the x{n} M z{n} construct, negation, union, nesting
+alphabet: abcd
+length: 0..30
+
+A = .*ab.*
+B = count("cd") >= 2
+C = runs(a, 2) >= 2
+D = balanced(a, .*, c, 1, 3)
+E = .*dd.*
+
+query: (A and B) and (C or D) and not E

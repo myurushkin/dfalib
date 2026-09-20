@@ -12,9 +12,14 @@ CTestTestfile.cmake
 src/dfalib.egg*
 build-*
 *.pyc
+__pycache__/
 venv
 build/
 .idea
 *.dll
 *.lib
 dafna.egg-info
+venv/
+
+# build artefacts
+*.gv
